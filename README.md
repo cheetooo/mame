@@ -14,7 +14,7 @@ API使用豆瓣FM移动端的接口，自行归档整理
 
 首页：音频封面部分的UI和动画参考了豆瓣FM移动端的设计，播控区icon等其他内容为自行设计结果
 
-![首页-音频播放页设计](static/image/main.png)
+![首页-音频播放页设计](assets/images/main.png)
 
 ## API
 

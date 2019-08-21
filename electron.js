@@ -8,11 +8,12 @@ let mainWindow
 
 function createWindow () {
   mainWindow = new BrowserWindow({    // Create the browser window.
-    width: 600,
-    height: 800,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
+    width: 300,
+    height: 320,
+    // webPreferences: {
+    //   preload: path.join(__dirname, 'preload.js')
+    // },
+    titleBarStyle: "hiddenInset"
   })
 
   // and load the index.html of the app.
@@ -22,7 +23,7 @@ function createWindow () {
        mainWindow.loadFile(path.join(__dirname, '/../build/index.html'))
    }
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

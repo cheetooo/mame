@@ -2,40 +2,23 @@ import React, {useState, useEffect, useCallback, useRef} from 'react'
 import {useTransition, useSpring, interpolate, animated} from 'react-spring'
 import drop from 'lodash/drop'
 import dropRight from 'lodash/dropRight'
-import './style.css'
+import './style.scss'
+var Mock = require('mockjs')
+
 const Main = () => {
-    const data = [
-    {
-        name: 'Rare Wind',
-        css: '#000'
-    }, 
-    {
-        name: 'Saint Petersburg',
-        css: '#000'
-    }, 
-    {
-        name: 'Deep Blue',
-        css: '#000'
-    }
-]
-const data2 = [
-    {
-        name: 'Near Moon',
-        css: '#000'
-    }, {
-        name: 'Wild Apple',
-        css: '#000'
-    }, {
-        name: 'Ladoga Bottom',
-        css: '#000'
-    },{
-        name: 'W3ild Apple',
-        css: '#000'
-    }, {
-        name: 'Lado2ga Bottom',
-        css: '#000'
-    }
-]
+    let data = []
+    useEffect(()=>{
+       var tem =  Mock.mock({
+            "data|3":[
+                {
+                "name": '@word',
+                "css": "@color"
+                }
+            ]
+        }).data
+        set(tem)
+    },[])
+
     const ref = useRef([])
     const [rows,
         set] = useState(data)
@@ -67,7 +50,10 @@ const data2 = [
         }
     })
     const next = () => {
-        let tem = rows.concat(data2[i]);
+        let tem = rows.concat(Mock.mock({
+            "name": '@word',
+            'css': '@color'
+        }));
         tem = drop(tem);
         setI(i == 4
             ? 0
@@ -89,15 +75,18 @@ const data2 = [
     const Delete = () =>{
         let tem = rows;
         tem = dropRight(tem);
-        tem = tem.concat(data2[i]);  
+        tem = tem.concat(Mock.mock({
+            "name": '@word',
+            'css': '@color'
+        }));  
         setI(i == 2
             ? 0
             : i + 1);
         set(tem)
     }
     return (
-        <div>
-            <div className="list">
+        <div className="main">
+            <div className="main_music-list">
                 {transitions.map(({
                     item,
                     props: {
@@ -110,26 +99,19 @@ const data2 = [
                 }, index) => (
                     <animated.div
                         key={key}
-                        className="card"
+                        className="main_music-list-item"
                         style={{
+                        background: item.css,
+                        backgroundSize:'cover',
                         zIndex: index + 1,
                         transform: interpolate([
                             x,y, rot
                         ], (x,y, rot) => `translate3d(${x}px,${y}px,0) rotate(${rot}deg)`),
                         ...rest
-                    }}>
-                        <div className="cell">
-                            <div
-                                className="details"
-                                style={{
-                                background: item.css,
-                                backgroundSize:'contain'
-                            }}/>
-                        </div>
-                    </animated.div>
+                    }}></animated.div>
                 ))}
             </div>
-            <button style={{marginLeft:'280px'}} onClick={() => next()}>下一个</button>
+            <button onClick={() => next()}>下一个</button>
             <button onClick={() => Delete()}>删除</button>
             <button onClick={() => reset()}>隐藏</button>
         </div>

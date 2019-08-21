@@ -8,6 +8,7 @@
     "electron": "^6.0.2",
     "lodash": "^4.17.15",
     "lowdb": "^1.0.0",
+    "mockjs": "^1.0.1-beta3",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-app-rewired": "^2.1.3",

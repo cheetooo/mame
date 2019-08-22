@@ -1,36 +1,37 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react'
+import React, {useState, useEffect, useCallback, useRef,useReducer} from 'react'
 import {useTransition, useSpring, interpolate, animated} from 'react-spring'
 import drop from 'lodash/drop'
 import dropRight from 'lodash/dropRight'
+import {reducer,INITIAL_STATE} from '../../reducer/index'
 import './style.scss'
 var Mock = require('mockjs')
 
+const init_state = INITIAL_STATE
+
 const Main = () => {
-    let data = []
-    useEffect(()=>{
-       var tem =  Mock.mock({
-            "data|3":[
-                {
-                "name": '@word',
-                "css": "@color"
-                }
-            ]
-        }).data
-        set(tem)
-    },[])
-
+    // let data = []
     const ref = useRef([])
-    const [rows,
-        set] = useState(data)
-    const [i,
-        setI] = useState(0)
-
+    // const [rows,set] = useState(data)
+    // const [i,setI] = useState(0)
     let height = 0
     let x = 80
-    let transitions = useTransition(rows.map((data, i) => ({
+    const [rows,dispatch] = useReducer(reducer,init_state)
+    // useEffect(()=>{
+    //    var tem =  Mock.mock({
+    //         "data|3":[
+    //             {
+    //             "name": '@word',
+    //             "css": "@color"
+    //             }
+    //         ]
+    //     }).data
+    //     set(tem)
+    // },[])
+    console.log(rows)
+    let transitions = useTransition(rows.audio_state_reducer.PLAY_HISTORY.map((data, i) => ({
         ...data,
-        x: 40 * i - 80,
-        y: (height += 100) - 250,
+        x: i == 2 ? -10 : 5 * i - 10,
+        y: (height += 50),
         rot: -20 + 10 *i
     })), d => d.name, {
         from: {
@@ -49,41 +50,38 @@ const Main = () => {
             friction: 100
         }
     })
-    const next = () => {
-        let tem = rows.concat(Mock.mock({
+    const change = () => {
+        let temp = Mock.mock({
             "name": '@word',
             'css': '@color'
-        }));
-        tem = drop(tem);
-        setI(i == 4
-            ? 0
-            : i + 1);
-        set(tem)
+        });
+        dispatch({type:'change_song',AUDIO_INFO:temp})
+        dispatch({type:'update'})
     }
-    const reset = useCallback(() => {
-        let temp = rows
-        ref
-            .current
-            .map(clearTimeout)
-        ref.current = []
-        set([])
-        ref
-            .current
-            .push(setTimeout(() => set(temp), 2000))
-    }, [])
+    // const reset = useCallback(() => {
+    //     let temp = rows
+    //     ref
+    //         .current
+    //         .map(clearTimeout)
+    //     ref.current = []
+    //     set([])
+    //     ref
+    //         .current
+    //         .push(setTimeout(() => set(temp), 2000))
+    // }, [])
 
-    const Delete = () =>{
-        let tem = rows;
-        tem = dropRight(tem);
-        tem = tem.concat(Mock.mock({
-            "name": '@word',
-            'css': '@color'
-        }));  
-        setI(i == 2
-            ? 0
-            : i + 1);
-        set(tem)
-    }
+    // const Delete = () =>{
+    //     let tem = rows;
+    //     tem = dropRight(tem);
+    //     tem = tem.concat(Mock.mock({
+    //         "name": '@word',
+    //         'css': '@color'
+    //     }));  
+    //     // setI(i == 2
+    //     //     ? 0
+    //     //     : i + 1);
+    //     set(tem)
+    // }
     return (
         <div className="main">
             <div className="main_music-list">
@@ -108,12 +106,15 @@ const Main = () => {
                             x,y, rot
                         ], (x,y, rot) => `translate3d(${x}px,${y}px,0) rotate(${rot}deg)`),
                         ...rest
-                    }}></animated.div>
+                    }} 
+                    onClick={() => change()}></animated.div>
                 ))}
             </div>
-            <button onClick={() => next()}>下一个</button>
-            <button onClick={() => Delete()}>删除</button>
-            <button onClick={() => reset()}>隐藏</button>
+            <div>
+                <button onClick={() => change()}>下一个</button>
+                {/* <button onClick={() => Delete()}>删除</button> */}
+                {/* <button onClick={() => reset()}>隐藏</button> */}
+            </div> 
         </div>
     )
 }

@@ -1,16 +1,17 @@
 import React,{Component} from 'react'
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { BrowserRouter, Switch, Route} from 'react-router-dom'
 import About from './About'
 import Setting from './Setting'
 import Main from './Main'
 import NotFound from './NotFound'
+import '../styles/index.css'
 
 export default class Container extends Component{
-    constructor(){
-        super();
-    }
+    // constructor(){
+        // super();
+    // }
     render(){
         return(   
             <BrowserRouter>

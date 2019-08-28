@@ -1,24 +1,45 @@
-import {INITIAL_AUDIO_STATE, audio_state_reducer} from './audio_state';
-import {INITIAL_RECORD_LIST, record_list_reducer} from './record_list';
+import  audio_state_reducer from './audio_state';
+import  record_list_reducer from './record_list';
 
-function combineReducers(reducers) { //整合reducer函数的对象的函数
-    return function (state = {}, action) { //返回一个整合之后的reducer函数 ,然后传给了createStore使用
-        //依次调用所有的reduce函数，并得到了状态,然后得到了许多的状态,得到n个新的子状态，封装成对象并返回 准备一个保存所有新的子状态的容器对象
-        const newState = {};
-        //包含所有reducers函数名的数组 然后forEach遍历所有的key
-        Object
-            .keys(reducers)
-            .forEach(key => {
-                const childState = state[key]; //状态就是总state得其中的一个子state
-                newState[key] = reducers[key](childState, action); //然后得到新的子状态，赋值给对应的key的新state里面
-            });
-        return newState; //最后返回新的总state对象
+// https://github.com/reduxjs/redux/blob/master/src/combineReducers.js
+function combineReducers(reducers) {
+      // 取得所有 key
+  const reducerKeys = Object.keys(reducers)
+  // 用來放所有 Reducer 的 state
+  let objInitState = {}
+
+  // 檢查是否都有預設的 state 值
+  reducerKeys.forEach((key) => {
+    // 傳入空的 type ，因為 Reducer 內會有預設 action 為回傳目前的 state
+    const initState = reducers[key](undefined, { type: '' })
+    if (initState === 'undefined'){
+      // 沒有的話提示錯誤
+      throw new Error(`${key} does not return state.`)
     }
+    // 如果有預設資料的話就放進 objInitState 裡面
+    objInitState[key] = initState
+  })
+
+  // combineReducer 會回傳一個和 Reducer 一樣的純函數，會接收 action 做事情
+  return (state, action) => {
+    if(action){
+      // 將該指令分別給所有的 Reducer 執行
+      reducerKeys.forEach((key) => {
+        const previousState = objInitState[key]
+        // 執行完後把回傳的 state 再收回保管全部 state 的 objInitState 中
+        objInitState[key] = reducers[key](previousState, action)
+      })
+    }
+    
+    // 沒有給 action 或有經過處理，都回傳一個新的 objInitState
+    return { ...objInitState }
+  }
 }
 
-const reducer = combineReducers({audio_state_reducer, record_list_reducer});
-const INITIAL_STATE = {
-    audio_state_reducer: INITIAL_AUDIO_STATE,
-    record_list_reducer: INITIAL_RECORD_LIST
-}
-export {reducer, INITIAL_STATE}
+const reducers = combineReducers({audio_state_reducer, record_list_reducer});
+// const INITIAL_STATE = {
+//     audio_state_reducer: INITIAL_AUDIO_STATE,
+//     record_list_reducer: INITIAL_RECORD_LIST
+// }
+
+export {reducers}

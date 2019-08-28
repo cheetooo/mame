@@ -13,7 +13,11 @@ function createWindow () {
     // webPreferences: {
     //   preload: path.join(__dirname, 'preload.js')
     // },
-    titleBarStyle: "hiddenInset"
+    titleBarStyle: "hiddenInset",
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false // disable CORS
+    }
   })
 
   // and load the index.html of the app.

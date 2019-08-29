@@ -1,8 +1,8 @@
 .main{
 	margin: 0;
 	position: relative;
-	height: 100%;
-	width: 100%
+	height: 100vh;
+	width: 100vw
 }
 	.main_music-list{
 		position: relative;
@@ -27,5 +27,15 @@
 .control{
 	position: absolute;
 	top: 0;
-	right: 0
+	right: 0;
+
+	div{
+		height: 30px;
+		width: 30px;
+		background-origin: center;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: auto;
+		float: left;
+	}
 }

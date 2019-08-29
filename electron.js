@@ -10,13 +10,11 @@ function createWindow () {
   mainWindow = new BrowserWindow({    // Create the browser window.
     width: 300,
     height: 300,
-    // webPreferences: {
-    //   preload: path.join(__dirname, 'preload.js')
-    // },
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: "hidden",
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false // disable CORS
+      // preload: path.join(__dirname, 'preload.js')
     }
   })
 

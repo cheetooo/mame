@@ -2,6 +2,8 @@
   "name": "mame",
   "version": "0.1.0",
   "private": true,
+  "author": "cheeto",
+  "email": "cheetowannashine@gmail.com",
   "dependencies": {
     "animejs": "^3.1.0",
     "axios": "^0.19.0",

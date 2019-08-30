@@ -1,17 +1,11 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef,useMemo} from 'react'
 import {useTransition, interpolate, animated} from 'react-spring'
 import {connect} from 'react-redux'
-import axios from 'axios'
 import './style.scss'
 import {Link} from 'react-router-dom'
-import {playStatus,changePlayList} from './store/action';
-import drop from 'lodash/drop'
-const baseUrl = 'https://api.douban.com/v2/fm/playlist?app_name=radio_android&apikey=02f7751a5506' +
-        '6bcb08e65f4eff134361&user_accept_play_third_party=0&client=s:mobile%7Cv:5.0.1%7C' +
-        'y:android+9%7Cf:654%7Cm:Xiaomi%7Cd:a57dd2f934f5911582ac34b2256c265287c62377%7Ce:' +
-        'xiaomi_mi_9&udid=a57dd2f934f5911582ac34b2256c265287c62377&version=654&push_devic' +
-        'e_id=8654eb9b2854da9684f9a62a8b2505dd57074b70&audio_patch_version=4&format=null&' +
-        'kbps=128&pb=128&from=&pt=0.0&channel=-10&type=n&sid=';
+import {playStatus,playListNextSong,removeSong} from './store/actionCreators';
+
+import {getNextSong} from '../../api'
 
         
 
@@ -26,7 +20,8 @@ const Main = (props) => {
 
     const {
         togglePlayingDispatch,
-        changePlayListDispatch
+        changePlayListDispatch,
+        removeSongDispatch
     } = props
 
     let transitions = useTransition(playList.map((data, i) => ({
@@ -55,17 +50,11 @@ const Main = (props) => {
     })
 
     function change() {
-        console.log(playList)
-        axios.get(baseUrl).then(
-            res=>{
-                changePlayListDispatch(drop(playList).concat(res.data.song[0]))
-
-            }
-        )
+        changePlayListDispatch()
     }
 
     function Delete() {
-        
+        removeSongDispatch({title:'32131',picture:''})
     }
 
     function like() {
@@ -148,9 +137,14 @@ const mapDispatchToProps = (dispatch) =>{
         togglePlayingDispatch(){
             dispatch(playStatus());
         },
-        changePlayListDispatch(data){
-            dispatch(changePlayList(data))
+        changePlayListDispatch(){
+            // console.log(playListNextSong())
+            dispatch(playListNextSong())
+        },
+        removeSongDispatch(data){
+            console.log(removeSong)
+            dispatch(removeSong(data))
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Main)
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Main))

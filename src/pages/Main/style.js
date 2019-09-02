@@ -25,17 +25,3 @@ export const MainMusicListItem = styled(animated.div)`
 	border-radius: 5px;
 	box-shadow: 2px 2px 5px 1px rgba(61, 61, 61, 0.5);
 `
-export const Control = styled.div`
-	position: absolute;
-	top: 0;
-	right: 0;
-`
-export const ControlItem = styled.div`
-	height: 30px;
-	width: 30px;
-	background-origin: center;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: auto;
-	float: left;
-`

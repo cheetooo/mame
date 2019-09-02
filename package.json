@@ -21,6 +21,7 @@
     "redux": "^4.0.4",
     "redux-immutable": "^4.0.0",
     "redux-thunk": "^2.3.0",
+    "run-electron": "^1.0.0",
     "styled-components": "^4.3.2"
   },
   "main": "electron.js",
@@ -31,8 +32,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
-    "electron:start": "electron .",
-    "electron:dev": "concurrently \"BROWSER=none react-scripts start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron:start": "run-electron .",
+    "electron:dev": "concurrently \"BROWSER=none react-scripts start\" \"wait-on http://localhost:3000 && run-electron .\""
   },
   "eslintConfig": {
     "extends": "react-app"

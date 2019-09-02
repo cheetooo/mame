@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux-immutable';
-import { reducer as mainReducer } from '../pages/Main/store/index';
-// import { reducer as settingReducer } from '../pages/Setting/store/index';
+// import { reducer as mainReducer } from '../pages/Main/store/index';
+import audioReducer from '../pages/Main/Audio/store/reducer';
 
 export default combineReducers({
-    main: mainReducer,
+    // main: mainReducer,
+    audio: audioReducer
     // setting: settingReducer
 })

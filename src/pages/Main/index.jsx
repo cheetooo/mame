@@ -4,23 +4,12 @@ import {connect} from 'react-redux'
 import * as styled from './style.js'
 import {Link} from 'react-router-dom'
 import {playStatus,playListNextSong,removeSong} from './store/actionCreators';
-
-
-        
+import Audio from './Audio/index'
 
 const Main = (props) => {
-    let height = 0
-    const audioRef = useRef(null)
-
+    let height = 0;
     const {
-        playing,
         playList
-    } = props
-
-    const {
-        togglePlayingDispatch,
-        changePlayListDispatch,
-        removeSongDispatch
     } = props
 
     let transitions = useTransition(playList.map((data, i) => ({
@@ -46,25 +35,7 @@ const Main = (props) => {
             tension: 500,
             friction: 100
         }
-    })
-
-    function change() {
-        changePlayListDispatch()
-    }
-
-    function Delete() {
-        removeSongDispatch({title:'32131',picture:''})
-    }
-
-    function like() {
-
-    }
-    const play = () => {
-        togglePlayingDispatch()
-        
-        console.log(playing)
-    }
-    
+    })    
     return (
         <styled.MainDiv>
             <styled.MainMusicList>
@@ -90,11 +61,11 @@ const Main = (props) => {
                             x, y, rot
                         ], (x, y, rot) => `translate3d(${x}px,${y}px,0) rotate(${rot}deg)`),
                         ...rest
-                    }}
-                        onClick={() => change()}></styled.MainMusicListItem>
+                    }}></styled.MainMusicListItem>
                 ))}
             </styled.MainMusicList>
-            <styled.Control>
+            <Audio/>
+            {/* <styled.Control>
                 <styled.ControlItem
                     style={{
                     backgroundImage: `url(${require('../../images/like.png')})`
@@ -118,29 +89,19 @@ const Main = (props) => {
                 }}
                     onClick={() => play()}></styled.ControlItem>
                 <div><Link to="/setting">jump</Link></div>
-            </styled.Control>
+            </styled.Control> */}
             {/* <audio ref={audioRef} className="audio" src={currentSong.url}></audio> */}
         </styled.MainDiv>
     )
 }
 const mapStateToProps = (state) => ({
-    playing: state.getIn(['main', 'playing']),
-    playList: state.getIn(['main', 'playList']).toJS()
+    playing: state.getIn(['audio', 'playing']),
+    playList: state.getIn(['audio', 'playList']).toJS()
 })
 
-const mapDispatchToProps = (dispatch) =>{
-    return {
-        togglePlayingDispatch(){
-            dispatch(playStatus());
-        },
-        changePlayListDispatch(){
-            // console.log(playListNextSong())
-            dispatch(playListNextSong())
-        },
-        removeSongDispatch(data){
-            console.log(removeSong)
-            dispatch(removeSong(data))
-        }
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Main))
+// const mapDispatchToProps = (dispatch) =>({
+//         togglePlayingDispatch: () => dispatch(playStatus()),
+//         changePlayListDispatch: () => dispatch(playListNextSong()),
+//         removeSongDispatch: (data) => dispatch(removeSong(data))
+// })
+export default connect(mapStateToProps)(React.memo(Main))

@@ -25,7 +25,7 @@ export const playListNextSong = () =>{
             // }
             const action = changePlayList(data.song[0])
             dispatch(action)
-        }).catch((err)=>{
+        }).catch(err=>{
             console.log(err)
         })
     }

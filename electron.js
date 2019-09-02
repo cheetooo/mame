@@ -25,8 +25,11 @@ function createWindow () {
        mainWindow.loadFile(path.join(__dirname, '/../build/index.html'))
    }
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
+  mainWindow.webContents.once('dom-ready', () => {
+    mainWindow.webContents.openDevTools()
+  })
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows

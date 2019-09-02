@@ -2,8 +2,7 @@
   "name": "mame",
   "version": "0.1.0",
   "private": true,
-  "author": "cheeto",
-  "email": "cheetowannashine@gmail.com",
+  "author": "cheeto <cheetowannashine@gmail.com>",
   "dependencies": {
     "animejs": "^3.1.0",
     "axios": "^0.19.0",
@@ -21,9 +20,11 @@
     "react-spring": "^8.0.27",
     "redux": "^4.0.4",
     "redux-immutable": "^4.0.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "styled-components": "^4.3.2"
   },
   "main": "electron.js",
+  "license": "MIT",
   "homepage": ".",
   "scripts": {
     "start": "react-app-rewired start",

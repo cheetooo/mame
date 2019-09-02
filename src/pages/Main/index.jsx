@@ -1,11 +1,10 @@
 import React, {useEffect, useState, useRef,useMemo} from 'react'
 import {useTransition, interpolate, animated} from 'react-spring'
 import {connect} from 'react-redux'
-import './style.scss'
+import * as styled from './style.js'
 import {Link} from 'react-router-dom'
 import {playStatus,playListNextSong,removeSong} from './store/actionCreators';
 
-import {getNextSong} from '../../api'
 
         
 
@@ -67,8 +66,8 @@ const Main = (props) => {
     }
     
     return (
-        <div className="main">
-            <div className="main_music-list">
+        <styled.MainDiv>
+            <styled.MainMusicList>
                 {transitions.map(({
                     item,
                     props: {
@@ -79,9 +78,8 @@ const Main = (props) => {
                     },
                     key
                 }, index) => (
-                    <animated.div
+                    <styled.MainMusicListItem
                         key={key}
-                        className="main_music-list-item"
                         style={{
                         background: item.picture
                             ? `url(${item.picture})`
@@ -93,38 +91,36 @@ const Main = (props) => {
                         ], (x, y, rot) => `translate3d(${x}px,${y}px,0) rotate(${rot}deg)`),
                         ...rest
                     }}
-                        onClick={() => change()}></animated.div>
+                        onClick={() => change()}></styled.MainMusicListItem>
                 ))}
-            </div>
-            <div 
-                className="control"
-            >
-                <div
+            </styled.MainMusicList>
+            <styled.Control>
+                <styled.ControlItem
                     style={{
                     backgroundImage: `url(${require('../../images/like.png')})`
                 }}
-                    onClick={() => like()}></div>
-                <div
+                    onClick={() => like()}></styled.ControlItem>
+                <styled.ControlItem
                     style={{
                     backgroundImage: `url(${require('../../images/next.png')})`
                 }}
-                    onClick={() => change()}></div>
-                <div
+                    onClick={() => change()}></styled.ControlItem>
+                <styled.ControlItem
                     style={{
                     backgroundImage: `url(${require('../../images/trash.png')})`
                 }}
-                    onClick={() => Delete()}></div>
-                <div
+                    onClick={() => Delete()}></styled.ControlItem>
+                <styled.ControlItem
                     style={{
                     backgroundImage: `url(${playing
                         ? require('../../images/stop.png')
                         : require('../../images/play.png')})`
                 }}
-                    onClick={() => play()}></div>
+                    onClick={() => play()}></styled.ControlItem>
                 <div><Link to="/setting">jump</Link></div>
-            </div>
+            </styled.Control>
             {/* <audio ref={audioRef} className="audio" src={currentSong.url}></audio> */}
-        </div>
+        </styled.MainDiv>
     )
 }
 const mapStateToProps = (state) => ({

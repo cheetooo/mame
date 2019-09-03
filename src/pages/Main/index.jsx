@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useRef,useMemo} from 'react'
-import {useTransition, interpolate, animated} from 'react-spring'
+import React, {useEffect, useState, useRef, useMemo} from 'react'
+import {useTransition, interpolate} from 'react-spring'
 import {connect} from 'react-redux'
 import {MainDiv, MainMusicList, MainMusicListItem} from './style.js'
 import {Link} from 'react-router-dom'
@@ -8,9 +8,7 @@ import Audio from './Audio/index'
 
 const Main = (props) => {
     let height = 0;
-    const {
-        playList
-    } = props
+    const { playList } = props
 
     let transitions = useTransition(playList.map((data, i) => ({
         ...data,
@@ -55,11 +53,10 @@ const Main = (props) => {
                         background: item.picture
                             ? `url(${item.picture})`
                             : '#fff',
-                        backgroundSize: 'cover',
                         zIndex: index + 1,
                         transform: interpolate([
                             x, y, rot
-                        ], (x, y, rot) => `translate3d(${x}px,${y}px,0) rotate(${rot}deg)`),
+                        ], (x, y, rot) => `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`),
                         ...rest
                     }}></MainMusicListItem>
                 ))}

@@ -1,7 +1,8 @@
-import React, {useRef, useEffect} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import {connect} from 'react-redux';
-import {Control} from './style';
+import {Control,ProgressBar} from './style';
 import {togglePlaying, changeSong, toggleLikeStatus, changeVolume} from './store/actionCreators'
+import {formatTime} from '../../../utils/index'
 import * as types from './store/types'
 const Audio = (props) => {
     const {
@@ -15,23 +16,32 @@ const Audio = (props) => {
                         @CoverUrl 封面地址
                         */
         currentVolume, // 当前音量
-        CurrentPlayTime // 当前播放时长
-    } = props;
 
-    const {
         togglePlayingDispatch, // 切换当前播放状态
         changeSongDispatch, // 下一曲
         toggleLikeStatusDispatch, // 喜欢当前歌曲
         changeVolumeDispatch, // 调整音量
-        changeCurrentPlayTimeDispatch // 调整当前播放进度
     } = props;
 
-    const audioRef = useRef(null)
+    const audioRef = useRef(null);
+    const [currentPlayTime, setCurrentPlayTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    let progress = currentPlayTime / duration * 100 +'%';
+    
+    useEffect(()=>{
+        // setCurrentPlayTime(0)
+    },[currentSong.aid]) // 使用 aid 歌曲唯一id作为依赖，currentSong为对象，引用类型故每次都会触发该Hook
 
     useEffect(()=>{
         playing ? audioRef.current.play() : audioRef.current.pause();
     },[playing])
 
+    const _audioReady = () => {
+        setDuration(audioRef.current.duration) // 获取音频时长
+    }
+    const _audioPlaying = ()=> {
+        setCurrentPlayTime(audioRef.current.currentTime)
+    }
     const miniPlayer = () => {
         return (
             <div></div>
@@ -67,6 +77,10 @@ const Audio = (props) => {
                 }}></div>
                 <p>{currentSong.title}</p>
                 <p>{currentSong.artist}</p>
+                <p>{formatTime(duration)}</p>
+                <ProgressBar>
+                    <div style={{width:progress}}></div>
+                </ProgressBar>
             </Control>
         )
     }
@@ -81,10 +95,10 @@ const Audio = (props) => {
                 // onPause={}
                 // onEnded={}
                 // onError={}
-                // onCanPlay={}
+                onCanPlay={_audioReady}
                 // onSeeking={}
                 // onVolumeChange={}
-                // onDurationChange={}
+                onTimeUpdate={_audioPlaying}
             ></audio>
         </div>
     )

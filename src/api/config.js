@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
     res=>res.data,
     err=>{
-        console.log('Network Error')
+        console.log('Network Error, Reason:' + err)
     }
 )
 

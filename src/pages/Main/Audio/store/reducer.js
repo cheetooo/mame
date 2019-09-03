@@ -12,6 +12,7 @@ const initState = fromJS({
 export default (state = initState, action) => {
     switch (action.type){
         case types.PLAYING:
+            // console.log(state.merge({'playing': !state.get('playing')}))
             return state.set('playing', !state.get('playing'));
         case types.NEXT_SONG:
             return state.merge({

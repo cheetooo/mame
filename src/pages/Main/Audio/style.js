@@ -28,8 +28,6 @@ export const ProgressBar = styled.div`
         ${'' /* border-radius:100%; */}
         position:absolute;
         left:0;
-        top:0;
-        
+        top:0; 
     }
 `
-

@@ -1,5 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react'
 import {connect} from 'react-redux';
+import { Link } from 'react-router-dom';
 import {Control,ProgressBar} from './style';
 import {togglePlaying, changeSong, toggleLikeStatus, changeVolume} from './store/actionCreators'
 import {formatTime} from '../../../utils/index'
@@ -81,6 +82,7 @@ const Audio = (props) => {
                 <ProgressBar>
                     <div style={{width:progress}}></div>
                 </ProgressBar>
+                <Link to="/setting">312</Link> 
             </Control>
         )
     }

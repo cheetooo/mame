@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {MainDiv, MainMusicList, MainMusicListItem} from './style.js'
 import {Link} from 'react-router-dom'
 import {playStatus,playListNextSong,removeSong} from './store/actionCreators';
-import Audio from './Audio/index'
+import Audio from '../../components/Audio/index'
 
 const Main = (props) => {
     let height = 0;
@@ -36,7 +36,6 @@ const Main = (props) => {
     })    
     return (
         <MainDiv>
-            <MainMusicList>
                 {transitions.map(({
                     item,
                     props: {
@@ -59,9 +58,7 @@ const Main = (props) => {
                         ], (x, y, rot) => `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`),
                         ...rest
                     }}></MainMusicListItem>
-                ))}
-            </MainMusicList>
-            <Audio/>
+                ))}           
         </MainDiv>
     )
 }

@@ -1,6 +1,6 @@
 import * as types from './types'
 import { fromJS } from 'immutable'
-import {getNextSong} from '../../../../api/index'
+import {getNextSong} from '../../../api/index'
 
 // 下一曲
 const nextSong = (data) =>({
@@ -45,6 +45,7 @@ export const changeSong = (type, data) => {
 
 // 切换红心状态
 export const toggleLikeStatus = (type) => {
+    console.log(213)
     return (dispatch) => {
         if(type == types.LIKE_SONG){
             dispatch(likeSong)

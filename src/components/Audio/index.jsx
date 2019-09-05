@@ -1,10 +1,13 @@
 import React, {useRef, useState, useEffect} from 'react'
 import {connect} from 'react-redux';
+import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom';
-import {Control,ProgressBar} from './style';
+import {Control,NormalControl,MiniControl,ProgressBar} from './style';
 import {togglePlaying, changeSong, toggleLikeStatus, changeVolume} from './store/actionCreators'
-import {formatTime} from '../../../utils/index'
 import * as types from './store/types'
+import {formatTime} from '../../utils/index'
+import {useSpring,animated} from 'react-spring'
+
 const Audio = (props) => {
     const {
         playing, // 当前播放状态
@@ -23,8 +26,10 @@ const Audio = (props) => {
         toggleLikeStatusDispatch, // 喜欢当前歌曲
         changeVolumeDispatch, // 调整音量
     } = props;
+    const { match, location, history } = props;
 
     const audioRef = useRef(null);
+
     const [currentPlayTime, setCurrentPlayTime] = useState(0);
     const [duration, setDuration] = useState(0);
     let progress = currentPlayTime / duration * 100 +'%';
@@ -43,54 +48,82 @@ const Audio = (props) => {
     const _audioPlaying = ()=> {
         setCurrentPlayTime(audioRef.current.currentTime)
     }
+    const miniPlayerSpring = useSpring({transform:`translateY(${location.pathname=='/'?300:0}px)`})
+    const normalPlayerSpring = useSpring({transform:`translateX(${location.pathname=='/'?0:150}px)`})
     const miniPlayer = () => {
         return (
-            <div></div>
+            <MiniControl style={miniPlayerSpring}>
+            <div className="control-bar">
+                {
+                    controlMap.map((item,index)=>
+                        <div
+                        key = {index}
+                        onClick = {()=>item.func(item.type)}
+                        style={{backgroundImage:item.backgroundImage}}
+                        >
+                        </div>           
+                    )
+                }
+            </div> 
+            <ProgressBar>
+                    <div style={{width:progress}}></div>
+                </ProgressBar>
+            </MiniControl>
         )
     }
+    const controlMap = [
+        {
+            backgroundImage: `url(${currentSong.like
+                ?require('../../images/like.png')
+                :require('../../images/unlike.png')})`,
+            func:toggleLikeStatusDispatch
+        },{
+            backgroundImage: `url(${playing
+            ? require('../../images/stop.png')
+            : require('../../images/play.png')})`,
+            func:togglePlayingDispatch
+        },{
+            backgroundImage: `url(${require('../../images/next.png')})`,
+            func:changeSongDispatch,
+            type:types.NEXT_SONG
+        },
+        {
+            backgroundImage: `url(${require('../../images/trash.png')})`,
+            func:changeSongDispatch,
+            type:types.REMOVE_SONG
+        }
+    ]
 
     const normalPlayer = () => {
         return (
-            <Control>
-                <div
-                    onClick={() => toggleLikeStatusDispatch()}
-                    style={{
-                    backgroundImage: `url(${currentSong.like
-                        ?require('../../../images/like.png')
-                        :require('../../../images/unlike.png')})`
-                }}></div>
-                <div
-                    onClick={() => togglePlayingDispatch()}
-                    style={{
-                        backgroundImage: `url(${playing
-                        ? require('../../../images/stop.png')
-                        : require('../../../images/play.png')})`
-                }}></div>
-                <div
-                    onClick={() => changeSongDispatch(types.NEXT_SONG)}
-                    style={{
-                    backgroundImage: `url(${require('../../../images/next.png')})`
-                }}></div>
-                <div
-                    onClick={() => changeSongDispatch(types.REMOVE_SONG)}
-                    style={{
-                    backgroundImage: `url(${require('../../../images/trash.png')})`
-                }}></div>
+            <NormalControl style={normalPlayerSpring}>
+                <Link to="/setting">jump</Link> 
+                <div className="control-bar">
+                {
+                    controlMap.map((item,index)=>
+                        <div
+                        key = {index}
+                        onClick = {()=>item.func(item.type)}
+                        style={{backgroundImage:item.backgroundImage}}
+                        >
+                        </div>           
+                    )
+                }
+                </div>
                 <p>{currentSong.title}</p>
                 <p>{currentSong.artist}</p>
                 <p>{formatTime(duration)}</p>
                 <ProgressBar>
                     <div style={{width:progress}}></div>
                 </ProgressBar>
-                <Link to="/setting">312</Link> 
-            </Control>
+            </NormalControl>
         )
     }
 
     return (
-        <div>
+        <Control>
             {normalPlayer()}
-            
+            {miniPlayer()}
             <audio
                 src={currentSong.url}
                 ref={audioRef}
@@ -102,21 +135,21 @@ const Audio = (props) => {
                 // onVolumeChange={}
                 onTimeUpdate={_audioPlaying}
             ></audio>
-        </div>
+        </Control>
     )
 }
+
 const mapStateToProps = state => ({
     playing: state.getIn(['audio', 'playing']),
     currentMHz: state.getIn(['audio', 'currentMHz']),
     currentSong: state.getIn(['audio', 'currentSong']).toJS(),
     currentVolume: state.getIn(['audio', 'currentVolume'])
 });
-
 const mapDispatchToProps = dispatch => ({
     togglePlayingDispatch: () => dispatch(togglePlaying()),
     changeSongDispatch: (type) => dispatch(changeSong(type)),
     toggleLikeStatusDispatch: (type) => dispatch(toggleLikeStatus(type)),
     changeVolumeDispatch: () => dispatch(changeVolume())
-})
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Audio)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Audio))

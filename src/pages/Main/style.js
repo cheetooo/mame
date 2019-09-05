@@ -2,17 +2,9 @@ import styled from 'styled-components'
 import { animated } from 'react-spring'
 
 export const MainDiv = styled.div`
-	margin: 0;
 	position: relative;
-	height: 100vh;
-	width: 100vw
-`
-export const MainMusicList = styled.div`
-	position: relative;
-	height: 100vh;
-	width: 50vw;
-	bottom: 0;
-	left: 0;
+	height: 100%;
+	width: 100%
 `
 export const MainMusicListItem = styled(animated.div)`
 	position: absolute;

@@ -4,6 +4,7 @@ import { fromJS } from 'immutable'
 const initState = fromJS({
     playing: false,
     playList: [{title:1},{title:2},{title:3}],
+    currentFM:String,
     currentSong: {},
     volume: Number,
     playTime: Number
@@ -31,6 +32,8 @@ export default (state = initState, action) => {
         case types.CHANGE_VOLUME:
             // todo
             return state;
+        case types.CHANGE_FM:
+            return state.set('currentFM', action.data);
         default:
             return state
     }

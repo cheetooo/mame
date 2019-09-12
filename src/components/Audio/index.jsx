@@ -1,12 +1,12 @@
 import React, {useRef, useState, useEffect} from 'react'
 import {connect} from 'react-redux';
-import { withRouter } from 'react-router'
-import { Link } from 'react-router-dom';
-import {Control,NormalControl,MiniControl,ProgressBar} from './style';
+import {withRouter} from 'react-router'
+import {Link} from 'react-router-dom';
+import {Control, NormalControl, MiniControl, ProgressBar} from './style';
 import {togglePlaying, changeSong, toggleLikeStatus, changeVolume} from './store/actionCreators'
 import * as types from './store/types'
 import {formatTime} from '../../utils/index'
-import {useSpring,animated} from 'react-spring'
+import {useSpring, animated} from 'react-spring'
 
 const Audio = (props) => {
     const {
@@ -26,47 +26,64 @@ const Audio = (props) => {
         toggleLikeStatusDispatch, // 喜欢当前歌曲
         changeVolumeDispatch, // 调整音量
     } = props;
-    const { match, location, history } = props;
+    const {match, location, history} = props;
 
     const audioRef = useRef(null);
 
-    const [currentPlayTime, setCurrentPlayTime] = useState(0);
-    const [duration, setDuration] = useState(0);
-    let progress = currentPlayTime / duration * 100 +'%';
-    
-    useEffect(()=>{
-        // setCurrentPlayTime(0)
-    },[currentSong.aid]) // 使用 aid 歌曲唯一id作为依赖，currentSong为对象，引用类型故每次都会触发该Hook
+    const [currentPlayTime,
+        setCurrentPlayTime] = useState(0);
+    const [duration,
+        setDuration] = useState(0);
+    let progress = currentPlayTime / duration * 100 + '%';
 
-    useEffect(()=>{
-        playing ? audioRef.current.play() : audioRef.current.pause();
-    },[playing])
+    useEffect(() => {
+        // setCurrentPlayTime(0)
+    }, [currentSong.aid]) // 使用 aid 歌曲唯一id作为依赖，currentSong为对象，引用类型故每次都会触发该Hook
+
+    useEffect(() => {
+        playing
+            ? audioRef
+                .current
+                .play()
+            : audioRef
+                .current
+                .pause();
+    }, [playing])
 
     const _audioReady = () => {
         setDuration(audioRef.current.duration) // 获取音频时长
     }
-    const _audioPlaying = ()=> {
+    const _audioPlaying = () => {
         setCurrentPlayTime(audioRef.current.currentTime)
     }
-    const miniPlayerSpring = useSpring({transform:`translateY(${location.pathname=='/'?300:0}px)`})
-    const normalPlayerSpring = useSpring({transform:`translateX(${location.pathname=='/'?0:150}px)`})
+    const miniPlayerSpring = useSpring({
+        transform: `translateY(${location.pathname == '/'
+            ? 300
+            : 0}px)`
+    })
+    const normalPlayerSpring = useSpring({
+        transform: `translateX(${location.pathname == '/'
+            ? 0
+            : 150}px)`
+    })
+
     const miniPlayer = () => {
         return (
             <MiniControl style={miniPlayerSpring}>
-            <div className="control-bar">
-                {
-                    controlMap.map((item,index)=>
-                        <div
-                        key = {index}
-                        onClick = {()=>item.func(item.type)}
-                        style={{backgroundImage:item.backgroundImage}}
-                        >
-                        </div>           
-                    )
-                }
-            </div> 
-            <ProgressBar>
-                    <div style={{width:progress}}></div>
+                <div className="control-bar">
+                    {controlMap.map((item, index) => <div
+                        key={index}
+                        onClick=
+                        {()=>item.func(item.type)}
+                        style={{
+                        backgroundImage: item.backgroundImage
+                    }}></div>)
+}
+                </div>
+                <ProgressBar>
+                    <div style={{
+                        width: progress
+                    }}></div>
                 </ProgressBar>
             </MiniControl>
         )
@@ -74,47 +91,46 @@ const Audio = (props) => {
     const controlMap = [
         {
             backgroundImage: `url(${currentSong.like
-                ?require('../../images/like.png')
-                :require('../../images/unlike.png')})`,
-            func:toggleLikeStatusDispatch
-        },{
+                ? require('../../images/like.png')
+                : require('../../images/unlike.png')})`,
+            func: toggleLikeStatusDispatch
+        }, {
             backgroundImage: `url(${playing
-            ? require('../../images/stop.png')
-            : require('../../images/play.png')})`,
-            func:togglePlayingDispatch
-        },{
+                ? require('../../images/stop.png')
+                : require('../../images/play.png')})`,
+            func: togglePlayingDispatch
+        }, {
             backgroundImage: `url(${require('../../images/next.png')})`,
-            func:changeSongDispatch,
-            type:types.NEXT_SONG
-        },
-        {
+            func: changeSongDispatch,
+            type: types.NEXT_SONG
+        }, {
             backgroundImage: `url(${require('../../images/trash.png')})`,
-            func:changeSongDispatch,
-            type:types.REMOVE_SONG
+            func: changeSongDispatch,
+            type: types.REMOVE_SONG
         }
     ]
 
     const normalPlayer = () => {
         return (
             <NormalControl style={normalPlayerSpring}>
-                <Link to="/setting">jump</Link> 
+                <Link to="/setting">jump</Link>
                 <div className="control-bar">
-                {
-                    controlMap.map((item,index)=>
-                        <div
-                        key = {index}
-                        onClick = {()=>item.func(item.type)}
-                        style={{backgroundImage:item.backgroundImage}}
-                        >
-                        </div>           
-                    )
-                }
+                    {controlMap.map((item, index) => <div
+                        key={index}
+                        onClick=
+                        {()=>item.func(item.type)}
+                        style={{
+                        backgroundImage: item.backgroundImage
+                    }}></div>)
+}
                 </div>
                 <p>{currentSong.title}</p>
                 <p>{currentSong.artist}</p>
                 <p>{formatTime(duration)}</p>
                 <ProgressBar>
-                    <div style={{width:progress}}></div>
+                    <div style={{
+                        width: progress
+                    }}></div>
                 </ProgressBar>
             </NormalControl>
         )
@@ -124,15 +140,10 @@ const Audio = (props) => {
         <Control>
             {normalPlayer()}
             {miniPlayer()}
-            <audio
-                src={currentSong.url}
-                ref={audioRef}
-                // onPause={}
-                // onEnded={}
-                // onError={}
-                onCanPlay={_audioReady}
-                // onSeeking={}
-                // onVolumeChange={}
+            <audio 
+                src={currentSong.url} 
+                ref={audioRef} // onPause={}} // onEnded={}} // onError={}} 
+                onCanPlay={_audioReady} // onSeeking={}} // onVolumeChange={}} 
                 onTimeUpdate={_audioPlaying}
             ></audio>
         </Control>
@@ -142,7 +153,9 @@ const Audio = (props) => {
 const mapStateToProps = state => ({
     playing: state.getIn(['audio', 'playing']),
     currentMHz: state.getIn(['audio', 'currentMHz']),
-    currentSong: state.getIn(['audio', 'currentSong']).toJS(),
+    currentSong: state
+        .getIn(['audio', 'currentSong'])
+        .toJS(),
     currentVolume: state.getIn(['audio', 'currentVolume'])
 });
 const mapDispatchToProps = dispatch => ({

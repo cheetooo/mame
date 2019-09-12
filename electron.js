@@ -11,6 +11,7 @@ function createWindow () {
     width: 300,
     height: 300,
     titleBarStyle: "hidden",
+    resizable:false,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false // disable CORS

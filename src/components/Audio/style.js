@@ -51,7 +51,9 @@ export const NormalControl = styled(animated.div)`
     }  
 `
 export const ProgressBar = styled.div `
-    width:100%;
+    box-sizing:border-box;
+    margin: 0 10px;
+    ${'' /* width:100%; */}
     height:2px;
     background:#d9f7be;
     border-radius:1px;

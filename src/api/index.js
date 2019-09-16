@@ -24,7 +24,8 @@ const commonParams = {
     version: 131
 }
 
-export const getNextSong = (channel = 153) => {
+// todo
+export const getNextSong = (channel) => {
     let url = `${audioBasePath}${Object.entries(Object.assign({
         }, commonParams, {channel:channel}))
         .reduce((pre, [k, v]) => {
@@ -32,6 +33,8 @@ export const getNextSong = (channel = 153) => {
         return axiosInstance.get(url)
     }
 
-    export const getIndexChannel = () => {
-        let url = `app_index_channels?`
-    }
+export const getIndexChannel = () => {
+    let url = `app_index_channels?${Object.entries(commonParams).reduce((pre,[k, v])=>{
+        return pre + k + '=' + v +'&'}, '')}`;
+    return axiosInstance.get(url)
+}

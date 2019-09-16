@@ -3,13 +3,16 @@ import {useTransition, interpolate} from 'react-spring'
 import {connect} from 'react-redux'
 import {MainDiv, MainMusicList, MainMusicListItem} from './style.js'
 import {Link} from 'react-router-dom'
-import {playStatus,playListNextSong,removeSong} from './store/actionCreators';
-import Audio from '../../components/Audio/index'
+import {fetchAllChannels,setChannel} from './store/actionCreators';
+
 
 const Main = (props) => {
     let height = 0;
-    const { playList } = props
-
+    const { playList,allChannel, fetchAllChannelsDispatch,setChannelDispatch } = props
+    useEffect(()=>{
+        // fetchAllChannelsDispatch()
+        console.log(allChannel)
+    },[])
     let transitions = useTransition(playList.map((data, i) => ({
         ...data,
         x: i == 2
@@ -49,7 +52,7 @@ const Main = (props) => {
                     <MainMusicListItem
                         key={key}
                         style={{
-                        background: item.picture
+                        backgroundImage: item.picture
                             ? `url(${item.picture})`
                             : '#fff',
                         zIndex: index + 1,
@@ -57,19 +60,20 @@ const Main = (props) => {
                             x, y, rot
                         ], (x, y, rot) => `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`),
                         ...rest
-                    }}></MainMusicListItem>
+                    }}
+                    ></MainMusicListItem>
                 ))}           
         </MainDiv>
     )
 }
 const mapStateToProps = (state) => ({
     playing: state.getIn(['audio', 'playing']),
-    playList: state.getIn(['audio', 'playList']).toJS()
+    playList: state.getIn(['audio', 'playList']).toJS(),
+    allChannel:state.getIn(['audio', 'appIndexChannel']).toJS()
 })
 
-// const mapDispatchToProps = (dispatch) =>({
-//         togglePlayingDispatch: () => dispatch(playStatus()),
-//         changePlayListDispatch: () => dispatch(playListNextSong()),
-//         removeSongDispatch: (data) => dispatch(removeSong(data))
-// })
-export default connect(mapStateToProps)(React.memo(Main))
+const mapDispatchToProps = (dispatch) =>({
+    fetchAllChannelsDispatch: () => dispatch(fetchAllChannels()),
+    setChannelDispatch: (data) => dispatch(setChannel(data))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Main))

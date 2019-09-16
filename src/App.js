@@ -5,7 +5,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {AnimatedSwitch, spring} from 'react-router-transition';
 import Main from './pages/Main';
 import Setting from './pages/Setting'
-import Audio from './components/Audio/index'
+import Audio from './pages/Audio/index'
 import './styles/index.css'
 
 function mapStyles(styles) {
@@ -35,6 +35,7 @@ const bounceTransition = {
 };
 
 function App() {
+
     return (
         <Provider store={store}>
             <Router>

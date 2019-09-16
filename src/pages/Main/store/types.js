@@ -1,3 +1,2 @@
-export const NEXT_SONG = 'NEXT_SONG';
-export const REMOVE_SONG = 'REMOVE_SONG';
-export const PLAY_STATUS = 'PLAY_STATUS'
+// export const FETCH_ALL_CHANNELS = 'FETCH_ALL_CHANNELS';
+// export const SET_CHANNEL = 'SET_CHANNEL';

@@ -1,32 +1,30 @@
-import * as types from './types'
-import { fromJS } from 'immutable';
-import {getNextSong} from '../../../api/index'
+// import * as types from './types'
+// import { fromJS } from 'immutable';
+// import {getIndexChannel} from '../../../api/index'
+// import {changeSong} from '../../Audio/store/actionCreators'
 
-const changePlayList = (data) =>({
-    type: types.NEXT_SONG,
-    data
-})
+// const setAllChannels = (data) =>({
+//     type: types.FETCH_ALL_CHANNELS,
+//     data
+// })
 
-export const removeSong = (data)=>({
-    type: types.REMOVE_SONG,
-    data
-})
+// const setChannels = (data) =>({
+//     type: types.SET_CHANNEL,
+//     data
+// })
 
-export const playStatus = () =>({
-    type: types.PLAY_STATUS
-})
+// export const fetchAllChannels = () =>{
+//     return dispatch =>{
+//         getIndexChannel().then(res=>{
+//             dispatch(setAllChannels(res))
+//             console.log(res.groups)
+//             // dispatch(setChannels(res.groups[0].chls[1]))
+//         })
+//     }
+// }
 
-export const playListNextSong = () =>{
-    return (dispatch) =>{
-        getNextSong().then(data=>{
-            // const action = {
-            //     type: types.NEXT_SONG,
-            //     data: fromJS(data.song[0])
-            // }
-            const action = changePlayList(data.song[0])
-            dispatch(action)
-        }).catch(err=>{
-            console.log(err)
-        })
-    }
-}
+// export const setChannel = (channel) =>{
+//     return dispatch =>{
+//         dispatch(setChannels(channel))
+//     }
+// }

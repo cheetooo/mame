@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     req => {
-        console.log(req)
+        // console.log(req)
         if(req.method == 'get'){
             return Object.assign({}, req, {url:`${req.url}&_ts=${Date.parse(new Date()) / 1000}`})
         }

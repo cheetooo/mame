@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router'
 import {Link} from 'react-router-dom';
 import {Control, NormalControl, MiniControl, ProgressBar} from './style';
-import {togglePlaying, changeSong, toggleLikeStatus, changeVolume} from './store/actionCreators'
+import {togglePlaying, changeSong, toggleLikeStatus, changeVolume, getAppIndexChannel} from './store/actionCreators'
 import * as types from './store/types'
 import {formatTime} from '../../utils/index'
 import {useSpring, animated} from 'react-spring'
@@ -11,7 +11,7 @@ import {useSpring, animated} from 'react-spring'
 const Audio = (props) => {
     const {
         playing, // 当前播放状态
-        currentMHz, // 当前MHz
+        currentChannel, // 当前MHz
         currentSong, // 当前歌曲信息
         /*
                         @isLike 是否为红心歌曲
@@ -25,6 +25,8 @@ const Audio = (props) => {
         changeSongDispatch, // 下一曲
         toggleLikeStatusDispatch, // 喜欢当前歌曲
         changeVolumeDispatch, // 调整音量
+        getAppIndexChannelDispatch,
+        allChannel
     } = props;
     const {match, location, history} = props;
 
@@ -35,6 +37,12 @@ const Audio = (props) => {
     const [duration,
         setDuration] = useState(0);
     let progress = currentPlayTime / duration * 100 + '%';
+
+    useEffect(()=>{
+        getAppIndexChannelDispatch().then(()=>{
+            console.log(allChannel)
+        })
+    },[])
 
     useEffect(() => {
         // setCurrentPlayTime(0)
@@ -49,6 +57,12 @@ const Audio = (props) => {
                 .current
                 .pause();
     }, [playing])
+
+    useEffect(()=>{
+        if(currentChannel.id){
+            changeSongDispatch(types.NEXT_SONG)
+        }
+    },[currentChannel])
 
     const _audioReady = () => {
         setDuration(audioRef.current.duration) // 获取音频时长
@@ -78,7 +92,7 @@ const Audio = (props) => {
                         style={{
                         backgroundImage: item.backgroundImage
                     }}></div>)
-}
+                    }
                 </div>
                 <ProgressBar>
                     <div style={{
@@ -152,17 +166,19 @@ const Audio = (props) => {
 
 const mapStateToProps = state => ({
     playing: state.getIn(['audio', 'playing']),
-    currentMHz: state.getIn(['audio', 'currentMHz']),
+    currentChannel: state.getIn(['audio', 'currentChannel']),
     currentSong: state
         .getIn(['audio', 'currentSong'])
         .toJS(),
-    currentVolume: state.getIn(['audio', 'currentVolume'])
+    currentVolume: state.getIn(['audio', 'currentVolume']),
+    allChannel:state.getIn(['audio', 'appIndexChannel']).toJS()
 });
 const mapDispatchToProps = dispatch => ({
     togglePlayingDispatch: () => dispatch(togglePlaying()),
     changeSongDispatch: (type) => dispatch(changeSong(type)),
     toggleLikeStatusDispatch: (type) => dispatch(toggleLikeStatus(type)),
-    changeVolumeDispatch: () => dispatch(changeVolume())
+    changeVolumeDispatch: () => dispatch(changeVolume()),
+    getAppIndexChannelDispatch: () => dispatch(getAppIndexChannel())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Audio))

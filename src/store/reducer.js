@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux-immutable';
+import {combineReducers} from 'redux-immutable';
 // import { reducer as mainReducer } from '../pages/Main/store/index';
 import audioReducer from '../pages/Audio/store/reducer';
 

@@ -62,24 +62,24 @@ export const changeVolume = (data) => ({
 })
 
 // 设置所有频道
-const getChannels = (data) =>({
+const getChannels = (data) => ({
     type: types.GET_CHANNELS,
     data
 })
 
-const setChannel = (data) =>({
+export const setChannel = (data) =>({
     type: types.SET_CHANNEL,
     data
 })
 
 // 获取所有频道
 export const getAppIndexChannel = () =>{
-    return async (dispatch,getState) =>{
-        await getIndexChannel().then(res=>{
+    return (dispatch,getState) =>{
+        getIndexChannel().then(res=>{
             dispatch(getChannels(res))
             if(!getState().toJS().audio.currentChannel.id){
                 dispatch(setChannel(res.groups[0].chls[1]))
-            } 
+            }
         })
-    } 
+    }
 }

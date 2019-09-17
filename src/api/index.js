@@ -24,7 +24,16 @@ const commonParams = {
     version: 131
 }
 
-// todo
+/*
+    @params channel Number 频道
+    @params type String 类型
+
+    下一曲（切换MHz后，点击下一曲）
+    加入到不喜欢
+    标记红心
+    取消红心      
+
+*/
 export const getNextSong = (channel) => {
     let url = `${audioBasePath}${Object.entries(Object.assign({
         }, commonParams, {channel:channel}))
@@ -33,6 +42,10 @@ export const getNextSong = (channel) => {
         return axiosInstance.get(url)
     }
 
+/*
+    @params void
+    获取所有MHz
+*/
 export const getIndexChannel = () => {
     let url = `app_index_channels?${Object.entries(commonParams).reduce((pre,[k, v])=>{
         return pre + k + '=' + v +'&'}, '')}`;

@@ -8,18 +8,14 @@ import {fetchAllChannels,setChannel} from './store/actionCreators';
 
 const Main = (props) => {
     let height = 0;
-    const { playList,allChannel, fetchAllChannelsDispatch,setChannelDispatch } = props
-    useEffect(()=>{
-        // fetchAllChannelsDispatch()
-        console.log(allChannel)
-    },[])
+    const { playList, allChannel, fetchAllChannelsDispatch, setChannelDispatch } = props
     let transitions = useTransition(playList.map((data, i) => ({
         ...data,
         x: i == 2
             ? -10
             : 5 * i - 10,
         y: (height += 50),
-        rot: -20 + 10 *i
+        rot: -20 + 10 * i
     })), d => d.title, {
         from: {
             opacity: 0,
@@ -29,7 +25,7 @@ const Main = (props) => {
             opacity: 0,
             rot: -30
         },
-        enter: ({x, y, rot}) => ({x, y, rot, opacity: 1}),
+        enter: ({x, y, rot}) => ({x, y, rot, opacity: 1,}),
         update: ({x, y, rot}) => ({x, y, rot}),
         config: {
             mass: 5,
@@ -41,16 +37,17 @@ const Main = (props) => {
         <MainDiv>
                 {transitions.map(({
                     item,
+                    key,
                     props: {
                         x,
                         y,
                         rot,
                         ...rest
-                    },
-                    key
-                }, index) => (
-                    <MainMusicListItem
-                        key={key}
+                    }  
+                }, index) => {
+                    console.log(item,key,{...rest})
+                    return <MainMusicListItem
+                        key={key + item.title}
                         style={{
                         backgroundImage: item.picture
                             ? `url(${item.picture})`
@@ -61,8 +58,8 @@ const Main = (props) => {
                         ], (x, y, rot) => `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`),
                         ...rest
                     }}
-                    ></MainMusicListItem>
-                ))}           
+                    ></MainMusicListItem>}
+                )}           
         </MainDiv>
     )
 }

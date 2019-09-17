@@ -6,8 +6,8 @@ const formatTime = (s) => {
         var sec = s % 60;
         if (hour < 10) {
             hour == 0
-            ? t = ""
-            : t = '0' + hour + ":";
+                ? t = ""
+                : t = '0' + hour + ":";
         } else {
             t = hour + ":";
         }
@@ -24,6 +24,4 @@ const formatTime = (s) => {
     return t;
 }
 
-export {
-    formatTime
-}
+export {formatTime}

@@ -8,12 +8,20 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     req => {
-        // console.log(req)
+        /* 
+            console.log(req)
+        */
         if(req.method == 'get'){
+            /*
+                在请求url上拼接_ts字段
+            */
             return Object.assign({}, req, {url:`${req.url}&_ts=${Date.parse(new Date()) / 1000}`})
         }
+        /* 
+            todo
+        */
         if(req.method == 'post'){
-            return req // todo
+            return req 
         }
         return req     
     },

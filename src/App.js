@@ -1,23 +1,22 @@
-import React from 'react'
-import {Provider} from 'react-redux'
-import store from './store/index'
+import React from 'react';
+import {Provider} from 'react-redux';
+import store from './store/index';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import {AnimatedSwitch, spring} from 'react-router-transition';
+
 import Main from './pages/Main';
-import Setting from './pages/Setting'
-import Audio from './pages/Audio/index'
-import './styles/index.css'
+import Setting from './pages/Setting';
+import Audio from './pages/Audio';
+import MHz from './pages/MHz'
 
-function mapStyles(styles) {
-    return {opacity: styles.opacity, transform: `rotate(${styles.rotate}deg)`};
-}
+import './styles/index.css';
 
-function bounce(val) {
-    return spring(val, {
-        stiffness: 100,
-        damping: 20
-    });
-}
+const mapStyles = (styles) => ({opacity: styles.opacity, transform: `rotate(${styles.rotate}deg)`})
+
+const bounce = (val) => spring(val, {
+    stiffness: 100,
+    damping: 20
+})
 
 const bounceTransition = {
     atEnter: {
@@ -34,8 +33,7 @@ const bounceTransition = {
     }
 };
 
-function App() {
-
+export const App = () => {
     return (
         <Provider store={store}>
             <Router>
@@ -48,10 +46,9 @@ function App() {
                     className="switch-wrapper">
                     <Route exact path="/" component={Main}/>
                     <Route path="/setting" component={Setting}/>
+                    <Route path="/MHz" component={MHz}/>
                 </AnimatedSwitch>
             </Router>
         </Provider>
     )
 }
-
-export default App;

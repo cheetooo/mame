@@ -25,12 +25,12 @@ const Main = (props) => {
             opacity: 0,
             rot: -30
         },
-        enter: ({x, y, rot}) => ({x, y, rot, opacity: 1,}),
+        enter: ({x, y, rot}) => ({x, y, rot, opacity: 1}),
         update: ({x, y, rot}) => ({x, y, rot}),
         config: {
-            mass: 5,
-            tension: 500,
-            friction: 100
+            mass: 1,
+            tension: 180,
+            friction: 12
         }
     })    
     return (
@@ -73,4 +73,4 @@ const mapDispatchToProps = (dispatch) =>({
     fetchAllChannelsDispatch: () => dispatch(fetchAllChannels()),
     setChannelDispatch: (data) => dispatch(setChannel(data))
 })
-export default connect(mapStateToProps, mapDispatchToProps)(React.memo(Main))
+export default connect(mapStateToProps, mapDispatchToProps)(Main)

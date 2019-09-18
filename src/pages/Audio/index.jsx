@@ -47,7 +47,7 @@ const Audio = (props) => {
     useEffect(() => {
         playing ? audioRef.current.play()
                 : audioRef.current.pause();
-    }, [playing])
+    }, [playing, currentSong.aid])
 
     useEffect(()=>{
         if(currentChannel.id){
@@ -56,11 +56,20 @@ const Audio = (props) => {
     },[currentChannel.id])
 
     const _audioReady = () => {
+        // if(playing){
+        //     audioRef.current.play()
+        // }
         setDuration(audioRef.current.duration) // 获取音频时长
     }
+
     const _audioPlaying = () => {
         setCurrentPlayTime(audioRef.current.currentTime)
     }
+
+    const _audioEnd = () =>{
+        changeSongDispatch(types.NEXT_SONG)
+    }
+    
     const miniPlayerSpring = useSpring({
         transform: `translateY(${location.pathname == '/'
             ? 300
@@ -151,9 +160,10 @@ const Audio = (props) => {
             {miniPlayer()}
             <audio 
                 src={currentSong.url} 
-                ref={audioRef} // onPause={}} // onEnded={}} // onError={}} 
+                ref={audioRef} // onPause={}}  // onError={}} 
                 onCanPlay={_audioReady} // onSeeking={}} // onVolumeChange={}} 
                 onTimeUpdate={_audioPlaying}
+                onEnded={_audioEnd}
             ></audio>
         </Control>
     )

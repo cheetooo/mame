@@ -16,5 +16,6 @@ export const MainMusicListItem = styled(animated.div)`
 	transition: all;
 	border-radius: 5px;
 	background-size: cover;
+	background-color: #fff;
 	box-shadow: 2px 2px 5px 1px rgba(61, 61, 61, 0.5);
 `

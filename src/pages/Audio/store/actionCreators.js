@@ -35,9 +35,10 @@ export const changeSong = (type) => {
         let data = getState().toJS().audio.currentChannel.id
         // console.log(getState().toJS().audio.currentChannel.id)
         getNextSong(data).then(res => {
+            let randomNumber = Math.floor(Math.random(0,1)*res.song.length)
             type == types.NEXT_SONG
-            ?dispatch(nextSong(res.song[0]))
-            :dispatch(removeSong(res.song[0]))
+            ?dispatch(nextSong(res.song[randomNumber]))
+            :dispatch(removeSong(res.song[randomNumber]))
         }).catch(err => {
             console.log(err)
         })

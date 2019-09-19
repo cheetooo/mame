@@ -12,6 +12,11 @@ function createWindow () {
     height: 300,
     titleBarStyle: "hidden",
     resizable:false,
+    maximizable:false, // disable maximizable
+    fullscreen:false, //  disable full screen expect OSX
+    fullscreenable: false, //disable full screen in OSX
+    hasShadow: true,
+    // icon:"",
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false // disable CORS

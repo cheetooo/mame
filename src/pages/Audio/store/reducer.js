@@ -3,10 +3,10 @@ import { fromJS } from 'immutable'
 
 const initState = fromJS({
     playing: false,
-    playList: [{title:1},{title:2},{title:3}],
+    playList: [],
     currentChannel:{},
     currentSong: {},
-    volume: Number,
+    volume: 1,
     appIndexChannel:{
         genre_groups: [],
         groups: []
@@ -16,16 +16,25 @@ const initState = fromJS({
 export default (state = initState, action) => {
     switch (action.type){
         case types.PLAYING:
-            // console.log(state.merge({'playing': !state.get('playing')}))
             return state.set('playing', !state.get('playing'));
         case types.NEXT_SONG:
-            return state.merge({
-                'playList': fromJS(state.get('playList').shift().push(action.data)),
-                'currentSong': fromJS(action.data)
-            })
+            if(fromJS(state.get('playList')).size == 0){
+                return state.merge({
+                    'playList': fromJS(state.get('playList').push({title:'temp1'},{title:'temp2'},action.data)),
+                    'currentSong': fromJS(action.data)
+                })
+            }else{
+                return state.merge({
+                    'playList': fromJS(state.get('playList').shift().push(action.data)),
+                    'currentSong': fromJS(action.data)
+                })
+            }            
             // return state.set('playList', fromJS(state.get('playList').shift().push(action.data)));
         case types.REMOVE_SONG:
-            return state.set('playList', fromJS(state.get('playList').pop().push(action.data)));
+            return state.merge({
+                'playList': fromJS(state.get('playList').pop().push(action.data)),
+                'currentSong': fromJS(action.data)
+            })
         case types.LIKE_SONG:
             // todo
             return state;
@@ -34,7 +43,7 @@ export default (state = initState, action) => {
             return state;
         case types.CHANGE_VOLUME:
             // todo
-            return state;
+            return state.set('volume', action.data);
         case 'SET_CHANNEL':
             console.log(action.data)
             return state.set('currentChannel', action.data);

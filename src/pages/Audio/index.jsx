@@ -9,19 +9,23 @@ import {togglePlaying, changeSong, toggleLikeStatus, changeVolume, getAppIndexCh
 import {Control, NormalControl, MiniControl, ProgressBar} from './style';
 import {formatTime} from '../../utils/index'
 
+import Draggable from 'react-draggable'
+
+// import {bindActionCreators} from 'redux'
 const Audio = (props) => {
     const {
         playing, // 当前播放状态
         allChannel, // 所有频道
         currentChannel, // 当前MHz
-        currentSong,    /*
-                        当前歌曲信息
-                        @isLike 是否为红心歌曲
-                        @albumName 专辑名称
-                        @ArtistName 歌手名字
-                        @CoverUrl 封面地址
-                        */
-        currentVolume, // 当前音量
+        /*
+        * 当前歌曲信息
+        * @isLike 是否为红心歌曲
+        * @albumName 专辑名称
+        * @ArtistName 歌手名字
+        * @CoverUrl 封面地址
+        */
+        currentSong,    
+        volume, // 当前音量
 
         togglePlayingDispatch, // 切换当前播放状态
         changeSongDispatch, // 下一曲
@@ -33,12 +37,22 @@ const Audio = (props) => {
 
     const [currentPlayTime, setCurrentPlayTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [onTouch, setTouch] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [moveX, setMoveX] = useState(0);
     const audioRef = useRef(null);
+    const volumeBarRef = useRef(null);
+
     let progress = currentPlayTime / duration * 100 + '%';
     
     useEffect(()=>{
         getAppIndexChannelDispatch()
     },[])
+
+    useEffect(()=>{
+        console.log(volume)
+        audioRef.current.volume = volume
+    }, [volume])
 
     useEffect(() => {
         // setCurrentPlayTime(0)
@@ -54,6 +68,18 @@ const Audio = (props) => {
             changeSongDispatch(types.NEXT_SONG)
         }
     },[currentChannel.id])
+    
+    const miniPlayerSpring = useSpring({
+        transform: `translateY(${location.pathname == '/'
+            ? 300
+            : 0}px)`
+    })
+
+    const normalPlayerSpring = useSpring({
+        transform: `translateX(${location.pathname == '/'
+            ? 0
+            : 150}px)`
+    })
 
     const _audioReady = () => {
         // if(playing){
@@ -69,18 +95,30 @@ const Audio = (props) => {
     const _audioEnd = () =>{
         changeSongDispatch(types.NEXT_SONG)
     }
-    
-    const miniPlayerSpring = useSpring({
-        transform: `translateY(${location.pathname == '/'
-            ? 300
-            : 0}px)`
-    })
-    const normalPlayerSpring = useSpring({
-        transform: `translateX(${location.pathname == '/'
-            ? 0
-            : 150}px)`
-    })
 
+    const _mouseDown = (e) =>{
+        setTouch(true)
+        // console.log(e)
+        setStartX(e.clientX)
+
+    }
+    const _mouseMove = (e) =>{
+        if(onTouch){
+            // volumeBarRef.current.clientWidth
+            // console.log(volumeBarRef)
+            // console.log(e.clientX - startX)
+            // console.log(volume/volumeBarRef.current.clientWidth*10000)
+            let newValue = (volume * volumeBarRef.current.clientWidth + (e.clientX - startX)) / volumeBarRef.current.clientWidth
+            console.log(newValue);
+            changeVolumeDispatch(newValue > 1?1:newValue)
+        }
+    }
+    const _mouseUp = () =>{
+         setTouch(false)
+    }
+    const _mouseClick = (e) =>{
+        // console.log(e)
+    }
     const controlMap = [
         {
             backgroundImage: `url(${currentSong.like
@@ -102,7 +140,6 @@ const Audio = (props) => {
             type: types.REMOVE_SONG
         }
     ]
-
     const miniPlayer = () => {
         return (
             <MiniControl style={miniPlayerSpring}>
@@ -126,7 +163,10 @@ const Audio = (props) => {
             </MiniControl>
         )
     }
-
+    // eventLogger = (e, data) => {
+    //             console.log('Event: ', e);
+    //             console.log('Data: ', data);
+    //         };
     const normalPlayer = () => {
         return (
             <NormalControl style={normalPlayerSpring}>
@@ -142,7 +182,7 @@ const Audio = (props) => {
 }
                 </div>
                 <Link to="/MHz">{currentChannel.name} MHz</Link>
-                <p>{currentSong.title}</p>
+                <p style={{WebkitAppRegion: 'drag'}}>{currentSong.title}</p>
                 <p>{currentSong.artist}</p>
                 <p>{formatTime(duration)}</p>
                 <ProgressBar>
@@ -150,6 +190,43 @@ const Audio = (props) => {
                         width: progress
                     }}></div>
                 </ProgressBar>
+
+                {/* <div 
+                    ref={volumeBarRef}
+                    className="volume-bar" 
+                    style={{margin:'0 10px',height:'5px',background:'#b5b5b5',marginTop:'10px',borderRadius:'5px',overflow:'hidden'}}>
+                    <div 
+                        onClick={(e)=>_mouseClick(e)}
+                        onMouseDown={(e)=>_mouseDown(e.nativeEvent)}
+                        onMouseMove={(e)=>_mouseMove(e.nativeEvent)}
+                        onMouseUp={(e)=>_mouseUp(e.nativeEvent)}
+                        // onMouseOut={(e)=>_mouseUp(e.nativeEvent)}
+                        className="volume-progress" 
+                        style={{width:`${volume*100}%`,height:'5px',background:'#c0ffb3',position:"relative"}}>
+                        <div 
+                            
+                            className="volume-button" 
+                            style={{height:'5px',cursor:'pointer',width:'5px',borderRadius:'100%',background:'#445c3c',position:'absolute',right:0,top:0}}
+                        ></div>
+                    </div>
+                </div> */}
+
+                <Draggable
+                    axis="x"
+                    handle=".handle"
+                    defaultPosition={{x: 0, y: 0}}
+                    position={null}
+                    grid={[25, 25]}
+                    scale={1}
+                    onStart={()=>{}}
+                    onDrag={()=>{}}
+                    onStop={()=>{}}>
+                    <div>
+                    <div className="handle">Drag from here</div>
+                    <div>This readme is really dragging on...</div>
+                    </div>
+                </Draggable>
+
             </NormalControl>
         )
     }
@@ -175,7 +252,7 @@ const mapStateToProps = state => ({
     currentSong: state
         .getIn(['audio', 'currentSong'])
         .toJS(),
-    currentVolume: state.getIn(['audio', 'currentVolume']),
+    volume: state.getIn(['audio', 'volume']),
     allChannel:state.getIn(['audio', 'appIndexChannel']).toJS()
 });
 
@@ -183,8 +260,24 @@ const mapDispatchToProps = dispatch => ({
     togglePlayingDispatch: () => dispatch(togglePlaying()),
     changeSongDispatch: (type) => dispatch(changeSong(type)),
     toggleLikeStatusDispatch: (type) => dispatch(toggleLikeStatus(type)),
-    changeVolumeDispatch: () => dispatch(changeVolume()),
+    changeVolumeDispatch: (value) => dispatch(changeVolume(value)),
     getAppIndexChannelDispatch: () => dispatch(getAppIndexChannel())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Audio))
+
+/**
+ *  使用 bindActionCreators 替换 mapDispatchToProps 
+ *  详见 https://medium.com/@kristenleach24/how-and-when-to-use-bindactioncreators-afe1f2d5f819
+ */
+
+// export default connect(mapStateToProps, 
+//     dispatch => bindActionCreators({
+//         togglePlayingDispatch:togglePlaying,
+//         nextSongDispatch:changeSong.bind(null, types.NEXT_SONG),
+//         removeSongDispatch:changeSong.bind(null, types.REMOVE_SONG),
+//         likeStatusDispatch:toggleLikeStatus.bind(null,),
+//         unlikeStatusDispatch:toggleLikeStatus.bind(null),
+//         changeVolumeDispatch:changeVolume,
+//         getAppIndexChannelDispatch:getAppIndexChannel
+//     },dispatch))(withRouter(Audio))

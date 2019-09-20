@@ -37,11 +37,11 @@ const Audio = (props) => {
 
     const [currentPlayTime, setCurrentPlayTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [onTouch, setTouch] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [moveX, setMoveX] = useState(0);
+    const [volumeProgress, serVolumeProgress] = useState(0)
     const audioRef = useRef(null);
+    const volumeContainerRef = useRef(null);
     const volumeBarRef = useRef(null);
+    // const volumeBarRef = useRef(null);
 
     let progress = currentPlayTime / duration * 100 + '%';
     
@@ -50,8 +50,9 @@ const Audio = (props) => {
     },[])
 
     useEffect(()=>{
-        console.log(volume)
-        audioRef.current.volume = volume
+        // console.log(volume)
+        serVolumeProgress(volume * volumeContainerRef.current.clientWidth);
+        audioRef.current.volume = volume;
     }, [volume])
 
     useEffect(() => {
@@ -97,24 +98,20 @@ const Audio = (props) => {
     }
 
     const _mouseDown = (e) =>{
-        setTouch(true)
+        // setTouch(true)
         // console.log(e)
-        setStartX(e.clientX)
+        // setStartX(e.clientX)
 
     }
     const _mouseMove = (e) =>{
-        if(onTouch){
-            // volumeBarRef.current.clientWidth
-            // console.log(volumeBarRef)
-            // console.log(e.clientX - startX)
-            // console.log(volume/volumeBarRef.current.clientWidth*10000)
-            let newValue = (volume * volumeBarRef.current.clientWidth + (e.clientX - startX)) / volumeBarRef.current.clientWidth
-            console.log(newValue);
-            changeVolumeDispatch(newValue > 1?1:newValue)
-        }
+        // console.log(e)
+        let {left} = volumeBarRef.current.getBoundingClientRect()
+        let vv = (e.clientX - left )/ volumeContainerRef.current.clientWidth;
+        vv = vv > 1 ? 1 : vv < 0 ? 0 : vv
+            changeVolumeDispatch(vv)
     }
     const _mouseUp = () =>{
-         setTouch(false)
+        //  setTouch(false)
     }
     const _mouseClick = (e) =>{
         // console.log(e)
@@ -210,22 +207,40 @@ const Audio = (props) => {
                         ></div>
                     </div>
                 </div> */}
-
-                <Draggable
-                    axis="x"
-                    handle=".handle"
-                    defaultPosition={{x: 0, y: 0}}
-                    position={null}
-                    grid={[25, 25]}
-                    scale={1}
-                    onStart={()=>{}}
-                    onDrag={()=>{}}
-                    onStop={()=>{}}>
-                    <div>
-                    <div className="handle">Drag from here</div>
-                    <div>This readme is really dragging on...</div>
+                <div 
+                    className="barContainer"
+                    ref={volumeContainerRef}
+                    style={{height:'5px',
+                            background:'#000',
+                            margin:'20px 10px 0'
+                            }}
+                    >
+                    <div
+                        ref={volumeBarRef}
+                        className="bar"
+                        style={{
+                            backgroundColor: 'blue',
+                            height: '5px',
+                            width: `${volumeProgress}px`,
+                        }}
+                    >
+                                <Draggable
+                            axis="x"
+                            handle=".handle"
+                            // defaultPosition={{x: 0, y: 0}}
+                            position={{x:volumeProgress,y:0}}
+                            // grid={[25, 25]}
+                            // scale={1}
+                            onStart={(e)=>{_mouseDown(e.nativeEvent)}}
+                            onDrag={(e)=>{_mouseMove(e)}}
+                            onStop={(e)=>{_mouseUp(e.nativeEvent)}}
+                            ><div className="handle" style={{height:'5px',width:'5px',borderRadius:'5px',background:'red'}}></div>
+                        </Draggable>
                     </div>
-                </Draggable>
+                </div>
+
+                
+                
 
             </NormalControl>
         )

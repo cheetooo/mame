@@ -1,12 +1,13 @@
 import * as types from './types'
 import { fromJS } from 'immutable'
+import {db} from '../../../db'
 
 const initState = fromJS({
     playing: false,
     playList: [],
     currentChannel:{},
     currentSong: {},
-    volume: 1,
+    volume: db.get('volume').write(),
     appIndexChannel:{
         genre_groups: [],
         groups: []
@@ -43,9 +44,11 @@ export default (state = initState, action) => {
             return state;
         case types.CHANGE_VOLUME:
             // todo
+            // db.set('volume', action.data).write();
             return state.set('volume', action.data);
+            // return state;
         case 'SET_CHANNEL':
-            console.log(action.data)
+            // console.log(action.data)
             return state.set('currentChannel', action.data);
         case types.GET_CHANNELS:
             return state.set('appIndexChannel',fromJS(action.data))

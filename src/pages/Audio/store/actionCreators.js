@@ -84,3 +84,6 @@ export const getAppIndexChannel = () =>{
         })
     }
 }
+export const updateSettingVolume = () =>({
+    type: types.UPDATE_SETTING_VALUE
+})

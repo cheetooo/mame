@@ -1,16 +1,16 @@
-import React, {useRef, useState, useEffect} from 'react'
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router'
-import {Link} from 'react-router-dom';
-import {useSpring, animated} from 'react-spring'
+import React, { useRef, useState, useEffect } from 'react'
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom';
+import { useSpring, animated } from 'react-spring'
 
 import * as types from './store/types'
-import {togglePlaying, changeSong, toggleLikeStatus, changeVolume, getAppIndexChannel} from './store/actionCreators'
-import {Control, NormalControl, MiniControl, ProgressBar} from './style';
-import {formatTime} from '../../utils/index'
+import { togglePlaying, changeSong, toggleLikeStatus, changeVolume, getAppIndexChannel, updateSettingVolume } from './store/actionCreators'
+import { Control, NormalControl, MiniControl, ProgressBar } from './style';
+import { formatTime } from '../../utils/index'
 
 import Draggable from 'react-draggable'
-
+import db from '../../db'
 // import {bindActionCreators} from 'redux'
 const Audio = (props) => {
     const {
@@ -24,7 +24,7 @@ const Audio = (props) => {
         * @ArtistName 歌手名字
         * @CoverUrl 封面地址
         */
-        currentSong,    
+        currentSong,
         volume, // 当前音量
 
         togglePlayingDispatch, // 切换当前播放状态
@@ -32,8 +32,9 @@ const Audio = (props) => {
         toggleLikeStatusDispatch, // 喜欢当前歌曲
         changeVolumeDispatch, // 调整音量
         getAppIndexChannelDispatch, // 获取所有频道
+        updateSettingVolumeDispatch
     } = props;
-    const {match, location, history} = props;
+    const { match, location, history } = props;
 
     const [currentPlayTime, setCurrentPlayTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -44,32 +45,43 @@ const Audio = (props) => {
     // const volumeBarRef = useRef(null);
 
     let progress = currentPlayTime / duration * 100 + '%';
-    
-    useEffect(()=>{
-        getAppIndexChannelDispatch()
-    },[])
 
-    useEffect(()=>{
+    useEffect(() => {
+        getAppIndexChannelDispatch()
+        // window.addEventListener('beforeunload',updateSettingVolumeDispatch)
+        window.addEventListener('beforeunload', (e)=>{db.set('app_setting.volume', audioRef.current.volume).write()})
+        /**
+         * 关于退出时音量保存的具体实现
+         * 第一时间反映的是 main 向 renderer 发送事件，renderer只做监听
+         * 但是尝试了监听 main 的 before-quit 和 will-quit 两个事件都不成功
+         * 想到了 electron 退出时触发事件顺序问题 ，如果 renderer 已经在 before-quit 和 will-quit 前被销毁， 则无论如何都监听不到 main 所发出的事件
+         * 官方文档对于退出时操作的实现是绑定在了 window.beforeunload 上 https://electronjs.org/docs/api/browser-window?#%E4%BA%8B%E4%BB%B6%EF%BC%9A-close
+         */
+    }, [])
+
+    useEffect(() => {
         // console.log(volume)
         serVolumeProgress(volume * volumeContainerRef.current.clientWidth);
+        // console.log(volumeProgress)
         audioRef.current.volume = volume;
     }, [volume])
 
     useEffect(() => {
         // setCurrentPlayTime(0)
+        // console.log(window)
     }, [currentSong.aid]) // 使用 aid 歌曲唯一id作为依赖，currentSong为对象，引用类型故每次都会触发该Hook
 
     useEffect(() => {
         playing ? audioRef.current.play()
-                : audioRef.current.pause();
+            : audioRef.current.pause();
     }, [playing, currentSong.aid])
 
-    useEffect(()=>{
-        if(currentChannel.id){
+    useEffect(() => {
+        if (currentChannel.id) {
             changeSongDispatch(types.NEXT_SONG)
         }
-    },[currentChannel.id])
-    
+    }, [currentChannel.id])
+
     const miniPlayerSpring = useSpring({
         transform: `translateY(${location.pathname == '/'
             ? 300
@@ -93,34 +105,39 @@ const Audio = (props) => {
         setCurrentPlayTime(audioRef.current.currentTime)
     }
 
-    const _audioEnd = () =>{
+    const _audioEnd = () => {
         changeSongDispatch(types.NEXT_SONG)
     }
 
-    const _mouseDown = (e) =>{
+    const _mouseDown = (e) => {
         // setTouch(true)
         // console.log(e)
         // setStartX(e.clientX)
 
     }
-    const _mouseMove = (e) =>{
+    const _mouseMove = (e) => {
         // console.log(e)
-        let {left} = volumeBarRef.current.getBoundingClientRect()
-        let vv = (e.clientX - left )/ volumeContainerRef.current.clientWidth;
+        let { left } = volumeBarRef.current.getBoundingClientRect()
+        let vv = (e.clientX - left) / volumeContainerRef.current.clientWidth;
+        if (vv <= 0) {
+            left = 0
+            // e.preventDefault();
+            return;
+        }
         vv = vv > 1 ? 1 : vv < 0 ? 0 : vv
-            changeVolumeDispatch(vv)
+        changeVolumeDispatch(vv)
     }
-    const _mouseUp = () =>{
+    const _mouseUp = () => {
         //  setTouch(false)
     }
-    const _mouseClick = (e) =>{
+    const _mouseClick = (e) => {
         // console.log(e)
     }
     const controlMap = [
         {
             backgroundImage: `url(${currentSong.like
                 ? require('../../images/like.png')
-                : require('../../images/unlike.png')})`,
+                : require('../../images/unlike.png')})`, 
             func: toggleLikeStatusDispatch
         }, {
             backgroundImage: `url(${playing
@@ -140,30 +157,27 @@ const Audio = (props) => {
     const miniPlayer = () => {
         return (
             <MiniControl style={miniPlayerSpring}>
-             <Link to="/">
-                <div className="control-bar">
-                    {controlMap.map((item, index) => <div
-                        key={index}
-                        onClick=
-                        {()=>item.func(item.type)}
-                        style={{
-                        backgroundImage: item.backgroundImage
-                    }}></div>)
-                    }
-                </div>
-                <ProgressBar>
-                    <div style={{
-                        width: progress
-                    }}></div>
-                </ProgressBar>
+                <Link to="/">
+                    <div className="control-bar">
+                        {controlMap.map((item, index) => <div
+                            key={index}
+                            onClick=
+                            {() => item.func(item.type)}
+                            style={{
+                                backgroundImage: item.backgroundImage
+                            }}></div>)
+                        }
+                    </div>
+                    <ProgressBar>
+                        <div style={{
+                            width: progress
+                        }}></div>
+                    </ProgressBar>
                 </Link>
             </MiniControl>
         )
     }
-    // eventLogger = (e, data) => {
-    //             console.log('Event: ', e);
-    //             console.log('Data: ', data);
-    //         };
+
     const normalPlayer = () => {
         return (
             <NormalControl style={normalPlayerSpring}>
@@ -172,14 +186,14 @@ const Audio = (props) => {
                     {controlMap.map((item, index) => <div
                         key={index}
                         onClick=
-                        {()=>item.func(item.type)}
+                        {() => item.func(item.type)}
                         style={{
-                        backgroundImage: item.backgroundImage
-                    }}></div>)
-}
+                            backgroundImage: item.backgroundImage
+                        }}></div>)
+                    }
                 </div>
                 <Link to="/MHz">{currentChannel.name} MHz</Link>
-                <p style={{WebkitAppRegion: 'drag'}}>{currentSong.title}</p>
+                <p style={{ WebkitAppRegion: 'drag' }}>{currentSong.title}</p>
                 <p>{currentSong.artist}</p>
                 <p>{formatTime(duration)}</p>
                 <ProgressBar>
@@ -207,14 +221,16 @@ const Audio = (props) => {
                         ></div>
                     </div>
                 </div> */}
-                <div 
+                <div
                     className="barContainer"
                     ref={volumeContainerRef}
-                    style={{height:'5px',
-                            background:'#000',
-                            margin:'20px 10px 0'
-                            }}
-                    >
+                    onClick={(e)=>_mouseMove(e)}
+                    style={{
+                        height: '5px',
+                        background: 'green',
+                        margin: '20px 10px 0'
+                    }}
+                >
                     <div
                         ref={volumeBarRef}
                         className="bar"
@@ -224,24 +240,19 @@ const Audio = (props) => {
                             width: `${volumeProgress}px`,
                         }}
                     >
-                                <Draggable
+                        <Draggable
                             axis="x"
                             handle=".handle"
-                            // defaultPosition={{x: 0, y: 0}}
-                            position={{x:volumeProgress,y:0}}
+                            position={{ x: volumeProgress, y: 0 }}
                             // grid={[25, 25]}
                             // scale={1}
-                            onStart={(e)=>{_mouseDown(e.nativeEvent)}}
-                            onDrag={(e)=>{_mouseMove(e)}}
-                            onStop={(e)=>{_mouseUp(e.nativeEvent)}}
-                            ><div className="handle" style={{height:'5px',width:'5px',borderRadius:'5px',background:'red'}}></div>
+                            onStart={(e) => { _mouseDown(e) }}
+                            onDrag={(e) => { _mouseMove(e) }}
+                            onStop={(e) => { _mouseUp(e) }}
+                        ><div className="handle" style={{ height: '5px', width: '5px'}}></div>
                         </Draggable>
                     </div>
                 </div>
-
-                
-                
-
             </NormalControl>
         )
     }
@@ -250,8 +261,8 @@ const Audio = (props) => {
         <Control>
             {normalPlayer()}
             {miniPlayer()}
-            <audio 
-                src={currentSong.url} 
+            <audio
+                src={currentSong.url}
                 ref={audioRef} // onPause={}}  // onError={}} 
                 onCanPlay={_audioReady} // onSeeking={}} // onVolumeChange={}} 
                 onTimeUpdate={_audioPlaying}
@@ -268,7 +279,7 @@ const mapStateToProps = state => ({
         .getIn(['audio', 'currentSong'])
         .toJS(),
     volume: state.getIn(['audio', 'volume']),
-    allChannel:state.getIn(['audio', 'appIndexChannel']).toJS()
+    allChannel: state.getIn(['audio', 'appIndexChannel']).toJS()
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -276,13 +287,14 @@ const mapDispatchToProps = dispatch => ({
     changeSongDispatch: (type) => dispatch(changeSong(type)),
     toggleLikeStatusDispatch: (type) => dispatch(toggleLikeStatus(type)),
     changeVolumeDispatch: (value) => dispatch(changeVolume(value)),
-    getAppIndexChannelDispatch: () => dispatch(getAppIndexChannel())
+    getAppIndexChannelDispatch: () => dispatch(getAppIndexChannel()),
+    updateSettingVolumeDispatch:() => dispatch(updateSettingVolume())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Audio))
 
 /**
- *  使用 bindActionCreators 替换 mapDispatchToProps 
+ *  使用 bindActionCreators 替换 mapDispatchToProps
  *  详见 https://medium.com/@kristenleach24/how-and-when-to-use-bindactioncreators-afe1f2d5f819
  */
 

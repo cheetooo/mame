@@ -43,6 +43,11 @@ coming soon
 
 这就写
 
+## Questions
+
+- electron 关闭时，renderer 的 window.onbeforeunload ，main 的 will-quit 、before-quit 的先后顺序问题
+- renderer 与 main 通信，如何调用在 main 创建的 DB
+
 <!-- ## 写在后面
 
 想做Mame的原因有很多，一方面是react hook出了蛮久，但在公司用的vue，自己一直找不到练手的项目又不想学别人的二手，就准备自己动手写一个。二是我本身一直对UI设计很感兴趣，就和设计师朋友讨教了一下设计的学习路线，所以Mame也是我的第一个设计作品。再就是我本身肥肠喜欢豆瓣以及豆瓣的产品线，作为占用我使用电量最多的APP，我就打算写一个豆瓣（fm）出来，还有，我真的太喜欢豆瓣FM6.0的UI了❤️ -->

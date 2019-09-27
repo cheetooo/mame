@@ -12,7 +12,7 @@ const path = require('path')
 module.exports = {
   mode: process.env.NODE_ENV == 'development' ? 'development' : 'production',
   entry: {
-    main: './electron'
+    main: './main-process'
   },
   output: {
     path: path.resolve(__dirname, './output'),

@@ -1,10 +1,29 @@
-import {app, BrowserWindow} from 'electron'
+import {app, BrowserWindow, systemPreferences, ipcMain, Menu, Tray} from 'electron'
 import isDev from 'electron-is-dev'
 import path from 'path'
 import db from './db'
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow, appIcon = null;
+
+ipcMain.on('put-in-tray', (event) => {
+  // const iconName = process.platform === 'win32' ? : ;
+  const iconPath = path.join(__dirname, '/play.png')
+  appIcon = new Tray(iconPath)
+
+  const contextMenu = Menu.buildFromTemplate([{
+    label: '移除',
+    click: () => {
+      event.sender.send('tray-removed')
+    }
+  }])
+  appIcon.setToolTip('示例')
+  appIcon.setContextMenu(contextMenu)
+})
+ipcMain.on('remove-tray', ()=>{
+  appIcon.destroy()
+})
+
 
 function createWindow () {
   let config = {
@@ -23,7 +42,8 @@ function createWindow () {
       // preload: path.join(__dirname, 'preload.js')
     }
   }
-  if(db.get('setting.position').write()) config = Object.assign({}, config, {x: db.get('setting.position.x').write(), y: db.get('setting.position.y').write()})
+  console.log(systemPreferences.isDarkMode()) // darkmode test
+  if(db.get('setting.window_position').write()) config = Object.assign({}, config, {x: db.get('setting.window_position.x').write(), y: db.get('setting.window_position.y').write()})
   mainWindow = new BrowserWindow(config)
   // and load the index.html of the app.
   if (isDev) {
@@ -52,11 +72,12 @@ function createWindow () {
 app.on('ready', createWindow)
 
 // Quit when all windows are closed.
-// app.on('window-all-closed', function () {
-//   // On macOS it is common for applications and their menu bar
-//   // to stay active until the user quits explicitly with Cmd + Q
-//   if (process.platform !== 'darwin') app.quit()
-// })
+app.on('window-all-closed', function () {
+  // On macOS it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (aooIcon) appIcon.destroy();
+  if (process.platform !== 'darwin') app.quit();
+})
 
 app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
@@ -65,10 +86,19 @@ app.on('activate', function () {
 })
 
 app.on('will-quit',function(){
+  // webContents.send() 
   let [x,y] = mainWindow.getPosition();
-  db.set('setting.position', {x,y}).write();
+  db.set('setting.window_position', {x,y}).write();
 })
 
+//darkmode test
+systemPreferences.subscribeNotification(
+  'AppleInterfaceThemeChangedNotification',
+  function theThemeHasChanged () {
+    console.log(systemPreferences.isDarkMode())
+    updateMyAppTheme(systemPreferences.isDarkMode())
+  }
+)
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

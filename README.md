@@ -39,14 +39,17 @@ coming soon
 
 随时更新...
 
-## reducer设计
+## TODO
 
-这就写
+- Mojave 夜间模式支持
+- 任务栏快捷键
+- 频道页 UI 设计
 
 ## Questions
 
 - electron 关闭时，renderer 的 window.onbeforeunload ，main 的 will-quit 、before-quit 的先后顺序问题
 - renderer 与 main 通信，如何调用在 main 创建的 DB
+- 匿名函数被创造时的内部变量，调用时发生变化
 
 <!-- ## 写在后面
 

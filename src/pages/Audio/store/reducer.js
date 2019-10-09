@@ -6,12 +6,10 @@ const initState = fromJS({
     playing: false,
     playList: [],
     currentChannel:{},
+    currentMHz:0,
     currentSong: {},
     volume: db.get('app_setting.volume').write(),
-    appIndexChannel:{
-        genre_groups: [],
-        groups: []
-    }
+    appIndexChannel:[]
 })
 
 export default (state = initState, action) => {
@@ -47,14 +45,16 @@ export default (state = initState, action) => {
             // db.set('app_setting.volume', action.data).write();
             return state.set('volume', action.data);
             // return state;
-        case 'SET_CHANNEL':
+        case types.SET_CHANNEL:
             // console.log(action.data)
             return state.set('currentChannel', action.data);
         case types.GET_CHANNELS:
             return state.set('appIndexChannel',fromJS(action.data))
         case types.UPDATE_SETTING_VALUE:
             db.set('app_setting.volume', state.get('volume')).write();
-            return state
+            return state;
+        case types.SET_MHZ:
+            return state.set('currentMHz', action.data)
         default:
             return state
     }

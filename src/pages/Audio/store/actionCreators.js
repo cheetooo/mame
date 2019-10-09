@@ -68,6 +68,11 @@ const getChannels = (data) => ({
     data
 })
 
+export const setMHZ = (data) => ({
+    type: types.SET_MHZ,
+    data
+})
+
 export const setChannel = (data) =>({
     type: types.SET_CHANNEL,
     data
@@ -77,7 +82,9 @@ export const setChannel = (data) =>({
 export const getAppIndexChannel = () =>{
     return (dispatch,getState) =>{
         getIndexChannel().then(res=>{
-            dispatch(getChannels(res))
+            const allChannel = res.groups.concat(res.genre_groups)
+            console.log(allChannel)
+            dispatch(getChannels(allChannel))
             if(!getState().toJS().audio.currentChannel.id){
                 dispatch(setChannel(res.groups[0].chls[1]))
             }

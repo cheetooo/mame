@@ -37,12 +37,12 @@ coming soon
 - lowdb
 - ~~sass~~  styled-components
 
-随时更新...
-
 ## TODO
 
 - Mojave 夜间模式支持
 - 任务栏快捷键
+- 键盘快捷键映射
+- 菜单栏
 - 频道页 UI 设计
 
 ## Questions

@@ -227,7 +227,8 @@ const Audio = (props) => {
                     onClick={(e)=>_mouseMove(e)}
                     style={{
                         height: '5px',
-                        background: 'green',
+                        background: '#ebebeb',
+                        borderRadius:'5px',
                         margin: '20px 10px 0'
                     }}
                 >
@@ -235,7 +236,8 @@ const Audio = (props) => {
                         ref={volumeBarRef}
                         className="bar"
                         style={{
-                            backgroundColor: 'blue',
+                            backgroundColor: '#d9f7be',
+                            borderRadius:'5px',
                             height: '5px',
                             width: `${volumeProgress}px`,
                         }}
@@ -249,7 +251,7 @@ const Audio = (props) => {
                             onStart={(e) => { _mouseDown(e) }}
                             onDrag={(e) => { _mouseMove(e) }}
                             onStop={(e) => { _mouseUp(e) }}
-                        ><div className="handle" style={{ height: '5px', width: '5px'}}></div>
+                        ><div className="handle" style={{ height: '5px', width: '10px'}}></div>
                         </Draggable>
                     </div>
                 </div>

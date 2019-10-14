@@ -51,3 +51,26 @@ export const getIndexChannel = () => {
         return pre + k + '=' + v +'&'}, '')}`;
     return axiosInstance.get(url)
 }
+
+/** 
+ * @params void
+ * 获取所有歌单
+*/
+
+export const getSongList = () => {
+    let url = ``
+}
+
+/** 
+ * @params void
+ * 获取歌单中的一首歌曲
+*/
+export const getCurrentSong = () => {
+    let url = ``
+}
+
+/** 
+ * @params void
+ * 
+*/
+

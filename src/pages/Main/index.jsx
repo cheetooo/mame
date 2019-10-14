@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {MainDiv, MainMusicList, MainMusicListItem} from './style.js'
 import {Link} from 'react-router-dom'
 import {fetchAllChannels,setChannel} from './store/actionCreators';
-
+import {HelloWorld2Upper} from '../Test/index';
 
 const Main = (props) => {
     let height = 0;
@@ -35,6 +35,7 @@ const Main = (props) => {
     })    
     return (
         <MainDiv>
+        <HelloWorld2Upper text='aDDDDDDc'/>
                 {transitions.map(({
                     item,
                     key,
@@ -45,7 +46,7 @@ const Main = (props) => {
                         ...rest
                     }  
                 }, index) => {
-                    console.log(item,key,{...rest})
+                    {/* console.log(item,key,{...rest}) */}
                     return <MainMusicListItem
                         key={key + item.title}
                         style={{

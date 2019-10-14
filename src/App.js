@@ -8,8 +8,11 @@ import Main from './pages/Main';
 import Setting from './pages/Setting';
 import Audio from './pages/Audio';
 import MHz from './pages/MHz'
+import Mine from './pages/Mine'
+import List from './pages/List'
 
 import './styles/index.css';
+
 
 const mapStyles = (styles) => ({opacity: styles.opacity, transform: `rotate(${styles.rotate}deg)`})
 
@@ -33,6 +36,10 @@ const bounceTransition = {
     }
 };
 
+const routers = [
+
+]
+
 export const App = () => {
     return (
         <Provider store={store}>
@@ -45,8 +52,10 @@ export const App = () => {
                     mapStyles={mapStyles}
                     className="switch-wrapper">
                     <Route exact path="/" component={Main}/>
-                    <Route path="/setting" component={Setting}/>
+                    <Route path="/Setting" component={Setting}/>
                     <Route path="/MHz" component={MHz}/>
+                    <Route path="/Mine" component={Mine} />
+                    <Route path="/List" component={List} />
                 </AnimatedSwitch>
             </Router>
         </Provider>

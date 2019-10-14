@@ -3,13 +3,17 @@ import { fromJS } from 'immutable'
 import db from '../../../db'
 
 const initState = fromJS({
-    playing: false,
-    playList: [],
-    currentChannel:{},
-    currentMHz:0,
-    currentSong: {},
-    volume: db.get('app_setting.volume').write(),
-    appIndexChannel:[]
+    isLoading: false,// 是否在加载中
+    playing: false,// 是否播放状态
+    playList: [],// 播放列表 todo ： 最近播放的三首歌
+    currentChannel: {}, // 当前频道信息
+    currentMHz: 0,  // 当前MHz ID
+    currentSong: {}, // 当前音乐信息
+    volume: db.get('app_setting.volume').write(), //音量
+    appIndexChannel: [], //应用内所有MHz
+    songLists:[], // 全部歌单
+    currentSongList:{}, //当前歌单
+    currentSongListIndex: 0 // 当前歌单内歌曲播放下标
 })
 
 export default (state = initState, action) => {
@@ -50,9 +54,6 @@ export default (state = initState, action) => {
             return state.set('currentChannel', action.data);
         case types.GET_CHANNELS:
             return state.set('appIndexChannel',fromJS(action.data))
-        case types.UPDATE_SETTING_VALUE:
-            db.set('app_setting.volume', state.get('volume')).write();
-            return state;
         case types.SET_MHZ:
             return state.set('currentMHz', action.data)
         default:

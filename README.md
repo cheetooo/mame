@@ -20,7 +20,7 @@ API使用豆瓣FM移动端的接口，自行归档整理，感谢阿北
 
 ![首页-音频播放页设计](assets/images/main.png)
 
-![MHz页-MHz列表页设计](assets/images/MHz.png)
+![MHz页-MHz列表页设计](assets/images/MHZ.png)
 
 剩下的还在设计中...
 

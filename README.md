@@ -20,6 +20,8 @@ API使用豆瓣FM移动端的接口，自行归档整理，感谢阿北
 
 ![首页-音频播放页设计](assets/images/main.png)
 
+![MHz页-MHz列表页设计](assets/images/MHz.png)
+
 剩下的还在设计中...
 
 ## API
@@ -54,3 +56,21 @@ coming soon
 <!-- ## 写在后面
 
 想做Mame的原因有很多，一方面是react hook出了蛮久，但在公司用的vue，自己一直找不到练手的项目又不想学别人的二手，就准备自己动手写一个。二是我本身一直对UI设计很感兴趣，就和设计师朋友讨教了一下设计的学习路线，所以Mame也是我的第一个设计作品。再就是我本身肥肠喜欢豆瓣以及豆瓣的产品线，作为占用我使用电量最多的APP，我就打算写一个豆瓣（fm）出来，还有，我真的太喜欢豆瓣FM6.0的UI了❤️ -->
+
+
+- Q:redux 和 shouldComponentUpdate?
+- A:redux 本身不涉及 diff 操作，diff 操作为 react 内部实现， redux 只有一个用途，就是提供 props，而 shouldComponentUpdate 才是 diff 的关键，它会判断该组件的 props 和 state 是否变化， 它的作用是拦截组件渲染，根据 props 和 state 来确认是否要 rerender ，在shouldComponentUpdate 仅浅比较 porps 和 state 时，可以使用 PureComponent 替代。
+
+- 只要 setState 调用，无论修改什么，render 方法就会自动触发，由于 diff 算法的存在，react 想要成功 update 就必须要经过两个步骤。
+1）render function 和 2） virtual DOM diff，从而看出，想要优化性能也只有这两个方法。 1）尽量不改变 virtual DOM，2）不触发 render function
+
+# REACT
+
+- REACT 是·库·，负责VIEW层，帮助构建UI
+- 只要调用 setState ，render方法就会触发。
+- JSX 的重点在 JS 上，也是一个 JS 对象。
+- JSX -> babel + React -> JS对象结构[好处：可以将JSX渲染到不同的场景、JS对象方便比较不直接操作DOM，减少rerender] -> ReactDOM.render -> DOM -> 插入节点
+- JSX 不是 HTML，是 JS
+- React 是用 JSX 描述组件长什么样
+- JSX 在编译时会变成相应的 JavaScript 对象结构描述
+- 

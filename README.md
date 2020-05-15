@@ -2,7 +2,7 @@
 
 ## 简介
 
-～～预计两个月完成，坚持更新💪～～ （我鸽了，但我还会回来的）
+~~预计两个月完成，坚持更新💪~~ （我鸽了，但我还会回来的）
 
 👤个人项目
 
@@ -63,14 +63,3 @@ coming soon
 
 - 只要 setState 调用，无论修改什么，render 方法就会自动触发，由于 diff 算法的存在，react 想要成功 update 就必须要经过两个步骤。
 1）render function 和 2） virtual DOM diff，从而看出，想要优化性能也只有这两个方法。 1）尽量不改变 virtual DOM，2）不触发 render function
-
-# REACT
-
-- REACT 是·库·，负责VIEW层，帮助构建UI
-- 只要调用 setState ，render方法就会触发。
-- JSX 的重点在 JS 上，也是一个 JS 对象。
-- JSX -> babel + React -> JS对象结构[好处：可以将JSX渲染到不同的场景、JS对象方便比较不直接操作DOM，减少rerender] -> ReactDOM.render -> DOM -> 插入节点
-- JSX 不是 HTML，是 JS
-- React 是用 JSX 描述组件长什么样
-- JSX 在编译时会变成相应的 JavaScript 对象结构描述
-- 
